@@ -15,7 +15,7 @@ public class ServeurAllumettes {
 
             System.out.println(">> Serveur Allumettes prêt !");
         } catch (Exception e) {
-            System.out.println(">> Echec de connexion au serveur bancaire : " + e);
+            System.out.println(">> Echec de connexion au serveur du jeux des allumettes : " + e);
         }
     }
 }
