@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ClientMain extends Application {
@@ -23,6 +24,7 @@ public class ClientMain extends Application {
             primaryStage.setTitle("Game server client");
             primaryStage.setMinWidth(400);
             primaryStage.setMinHeight(320);
+            primaryStage.getIcons().add(new Image("file:client/res/icon.png"));
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();

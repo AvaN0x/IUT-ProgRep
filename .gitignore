@@ -11,3 +11,6 @@ vscode.code-workspace
 
 # Log files
 *.log
+
+# Icon photoshop file
+client/res/icon.psd
