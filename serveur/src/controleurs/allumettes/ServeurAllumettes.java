@@ -3,14 +3,15 @@ package serveur.src.controleurs.allumettes;
 import java.rmi.*;
 import java.rmi.registry.*;
 
+import serveur.src.ServeurMain;
 import serveur.src.modeles.allumettes.*;
 
 public class ServeurAllumettes {
-    public static void lancer(String hote, int port) {
+    public static void lancer() {
         try {
-            LocateRegistry.createRegistry(port);
+            LocateRegistry.createRegistry(ServeurMain.PORT);
 
-            Naming.rebind("rmi://" + hote + ":" + port + "/allumettes", new Allumettes());
+            Naming.rebind("rmi://" + ServeurMain.HOTE + ":" + ServeurMain.PORT + "/allumettes", new Allumettes());
 
             System.out.println(">> Serveur Allumettes prêt !");
         } catch (Exception e) {
