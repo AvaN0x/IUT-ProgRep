@@ -3,16 +3,15 @@ package client.src.vues.allumettes;
 import java.rmi.Naming;
 import java.util.UUID;
 
+import client.src.ClientMain;
 import commun.IAllumettes;
 
 public class Allumettes {
 
-    public static void main(String[] args) {
+    public static void lancer() {
         try {
-            int port = 6000;
-            String hote = "127.0.0.1";
-
-            IAllumettes partie = (IAllumettes) Naming.lookup("rmi://" + hote + ":" + port + "/allumettes");
+            IAllumettes partie = (IAllumettes) Naming
+                    .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
 
             UUID id = partie.nouveauSalon();
 

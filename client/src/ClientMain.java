@@ -9,6 +9,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class ClientMain extends Application {
+    public static int PORT = 6000;
+    public static String HOTE = "127.0.0.1";
 
     @Override
     public void start(Stage primaryStage) {
