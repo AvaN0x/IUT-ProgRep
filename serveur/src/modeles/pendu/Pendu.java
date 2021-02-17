@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,6 +39,11 @@ public class Pendu extends UnicastRemoteObject implements IPendu {
     public int recupNbLettres(UUID id) throws RemoteException {
         // Renvoie le nombre de lettres du mot du salon `id`
         return salons.get(id).recupererMot().length();
+    }
+
+    @Override
+    public Map<Integer, Character> recupIndice(UUID id) throws RemoteException {
+        return salons.get(id).recupIndice();
     }
 
     @Override

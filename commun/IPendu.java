@@ -2,6 +2,7 @@ package commun;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IPendu extends Remote {
@@ -21,6 +22,15 @@ public interface IPendu extends Remote {
      * @throws RemoteException
      */
     public int recupNbLettres(UUID id) throws RemoteException;
+
+    /**
+     * Récupère des indices pour le joueur d'un salon
+     * 
+     * @param id l'id du salon
+     * @return Une Map avec la position de la lettre et la lettre
+     * @throws RemoteException
+     */
+    public Map<Integer, Character> recupIndice(UUID id) throws RemoteException;
 
     /**
      * Vérifie si une lettre fait partie du mot d'un salon

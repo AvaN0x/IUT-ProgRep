@@ -3,6 +3,7 @@ package serveur.src.modeles.pendu;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -76,6 +77,16 @@ public class PenduInstance {
     public int perdreVie() {
         this.vie--;
         return this.vie;
+    }
+
+    public HashMap<Integer, Character> recupIndice() {
+        HashMap<Integer, Character> map = new HashMap<>();
+        for (int i = 0; i < this.mot.length() / 5; i++) {
+            Random alea = new Random();
+            int numLettre = alea.nextInt(this.mot.length() + 1);
+            map.put(numLettre, this.mot.charAt(numLettre));
+        }
+        return map;
     }
 
 }
