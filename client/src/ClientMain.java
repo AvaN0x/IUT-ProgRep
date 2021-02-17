@@ -13,12 +13,12 @@ public class ClientMain extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            URL fxmlURL = getClass().getResource("views/MainView.fxml");
+            URL fxmlURL = getClass().getResource("vues/MainView.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL);
             Scene scene = new Scene((ScrollPane) fxmlLoader.load());
-            scene.getStylesheets().add("views/style.css");
+            scene.getStylesheets().add("vues/style.css");
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Game server");
+            primaryStage.setTitle("Game server client");
             primaryStage.setMinWidth(400);
             primaryStage.setMinHeight(320);
             primaryStage.show();
