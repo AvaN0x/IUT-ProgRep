@@ -3,6 +3,8 @@ package serveur.src.modeles.allumettes;
 import java.rmi.*;
 import java.rmi.server.*;
 
+import commun.IAllumettesJeux;
+
 public class AllumettesJeux extends UnicastRemoteObject implements IAllumettesJeux {
     private int allumettesRestantes; // TODO use array
 

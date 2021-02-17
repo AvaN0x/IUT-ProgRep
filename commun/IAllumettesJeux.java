@@ -1,4 +1,4 @@
-package serveur.src.modeles.allumettes;
+package commun;
 
 import java.rmi.*;
 

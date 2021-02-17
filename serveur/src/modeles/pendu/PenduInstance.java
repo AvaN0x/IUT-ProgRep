@@ -1,4 +1,4 @@
-package serveur.src.modeles;
+package serveur.src.modeles.pendu;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class PenduInstance {
      */
     public PenduInstance() throws ParserConfigurationException, SAXException, IOException {
         // TODO: A tester sous Eclipse
-        File fichier = new File("serveur\\src\\modeles\\pendu.xml");
+        File fichier = new File("serveur\\src\\modeles\\pendu\\pendu.xml");
         DocumentBuilderFactory usine = DocumentBuilderFactory.newInstance();
         DocumentBuilder constructeur = usine.newDocumentBuilder();
         Document doc = constructeur.parse(fichier);

@@ -1,4 +1,4 @@
-package serveur.src.modeles;
+package serveur.src.modeles.pendu;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
