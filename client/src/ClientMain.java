@@ -1,3 +1,5 @@
+package client.src;
+
 import java.net.URL;
 
 import javafx.application.Application;

@@ -4,5 +4,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 
-	<classpathentry kind="lib" path="lib/javafx/*"/>
+	<classpathentry kind="lib" path="../lib/javafx/*"/>
 </classpath>
