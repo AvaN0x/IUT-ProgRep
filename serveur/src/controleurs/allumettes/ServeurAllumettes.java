@@ -10,7 +10,7 @@ public class ServeurAllumettes {
         try {
             LocateRegistry.createRegistry(port);
 
-            Naming.rebind("rmi://" + hote + ":" + port + "/banque", new AllumettesJeux());
+            Naming.rebind("rmi://" + hote + ":" + port + "/allumettes", new Allumettes());
 
             System.out.println(">> Serveur Allumettes prêt !");
         } catch (Exception e) {
