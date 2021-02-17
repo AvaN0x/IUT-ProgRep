@@ -1,4 +1,9 @@
-package client.src.vues.allumettes;
+package client.src.controleurs.allumettes;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import client.src.controleurs.BaseControleur;
 
 import java.rmi.Naming;
 import java.util.UUID;
@@ -6,9 +11,10 @@ import java.util.UUID;
 import client.src.ClientMain;
 import commun.IAllumettes;
 
-public class Allumettes {
+public class AllumettesControleur extends BaseControleur {
 
-    public static void lancer() {
+    @Override
+    public void initialize(URL location, ResourceBundle ressources) {
         try {
             IAllumettes partie = (IAllumettes) Naming
                     .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
@@ -29,7 +35,9 @@ public class Allumettes {
 
             partie.fermerSalon(id);
         } catch (Exception e) {
-            System.out.println("Allumettes exception: " + e);
+            showErreurAlerte("Allumettes exception: ", e.toString());
+            this.fermer();
         }
     }
+
 }

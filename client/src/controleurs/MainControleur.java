@@ -3,11 +3,10 @@ package client.src.controleurs;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import client.src.vues.allumettes.Allumettes;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class MainControleur implements javafx.fxml.Initializable {
+public class MainControleur extends BaseControleur {
     @FXML
     private Button btnPendu;
     @FXML
@@ -27,7 +26,11 @@ public class MainControleur implements javafx.fxml.Initializable {
     }
 
     public void openAllumettes() {
-        Allumettes.lancer();
+        try {
+            new client.src.vues.allumettes.NewAllumettesVue().showAndWait();
+        } catch (Exception e) {
+            showErreurAlerte(e.getClass().getSimpleName(), e.getMessage());
+        }
     }
 
 }
