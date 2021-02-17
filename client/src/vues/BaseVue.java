@@ -6,7 +6,7 @@ import java.net.URL;
 import client.src.controleurs.BaseControleur;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
+// import javafx.scene.image.Image;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
