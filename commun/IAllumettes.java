@@ -8,7 +8,7 @@ public interface IAllumettes extends Remote {
 
     public boolean fermerSalon(UUID id) throws RemoteException;
 
-    public void retirer(UUID id, int quantite) throws RemoteException;
+    public boolean retirer(UUID id, int[] positions) throws RemoteException;
 
     public void serveurJoue(UUID id) throws RemoteException;
 
@@ -16,4 +16,5 @@ public interface IAllumettes extends Remote {
 
     public boolean isAuJoueurDeJouer(UUID id) throws RemoteException;
 
+    public boolean[] getAllumettesArray(UUID id) throws RemoteException;
 }

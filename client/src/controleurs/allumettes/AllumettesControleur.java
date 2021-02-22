@@ -1,16 +1,19 @@
 package client.src.controleurs.allumettes;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import client.src.controleurs.BaseControleur;
 
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.UUID;
 
 import client.src.ClientMain;
 import commun.IAllumettes;
-
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
@@ -25,13 +28,23 @@ public class AllumettesControleur extends BaseControleur {
     @FXML
     private Pane allumettesConteneur;
 
+    private Group[] allumettes;
+
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
+        initAllumettes();
+
+        Platform.runLater(() -> {
+            partieScriptee();
+        });
+    }
+
+    private void initAllumettes() {
         int maxWidth = 400;
         int maxAllumettesLigne = maxWidth % (16 + 8);
-        System.out.println(maxAllumettesLigne);
 
-        for (int i = 0; i < 32; i++) {
+        this.allumettes = new Group[35];
+        for (int i = 0; i < 35; i++) {
             Rectangle tete = new Rectangle(16, 16);
             tete.setArcHeight(8);
             tete.setArcWidth(8);
@@ -57,6 +70,7 @@ public class AllumettesControleur extends BaseControleur {
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     ((Group) target.getParent()).getChildren().forEach((_node) -> {
                         ((Shape) _node).setEffect(null);
+                        // ((Shape) _node).setVisible(false);
                     });
 
                 }
@@ -66,9 +80,15 @@ public class AllumettesControleur extends BaseControleur {
             allumette.setLayoutY(4 + (i / maxAllumettesLigne) * (64 + 16));
             allumettesConteneur.getChildren().add(allumette);
 
+            this.allumettes[i] = allumette;
         }
+    }
 
-        // partieScriptee();
+    private void updateAllumettes(boolean[] allumettesServeur) {
+        for (int i = 0; i < (allumettesServeur.length > this.allumettes.length ? this.allumettes.length
+                : allumettesServeur.length); i++) {
+            this.allumettes[i].setVisible(allumettesServeur[i]);
+        }
     }
 
     private void partieScriptee() {
@@ -78,15 +98,18 @@ public class AllumettesControleur extends BaseControleur {
 
             UUID id = partie.nouveauSalon();
 
-            while (partie.getNombreAllumettes(id) > 0) {
+            while (partie.getNombreAllumettes(id) > 30) {
                 if (partie.isAuJoueurDeJouer(id)) {
                     System.out.println("Le joueur joue avec -2 allumette");
-                    partie.retirer(id, 2);
+                    // partie.retirer(id, 2);
+                    partie.serveurJoue(id);
                 } else {
                     System.out.println("Le serveur joue avec -1 allumette");
                     partie.serveurJoue(id);
                 }
                 System.out.println("Nombre d'allumettes restantes : " + partie.getNombreAllumettes(id));
+                updateAllumettes(partie.getAllumettesArray(id));
+                Thread.sleep(500);
             }
             System.out.println((partie.isAuJoueurDeJouer(id) ? "Le serveur" : "Le joueur") + " a gagné la partie !");
 

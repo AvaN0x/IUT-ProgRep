@@ -30,24 +30,43 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     }
 
     @Override
-    public void retirer(UUID id, int quantite) throws RemoteException {
-        if (salons.get(id).getAllumettesRestantes() >= quantite)
-            salons.get(id).retirer(quantite);
+    public boolean retirer(UUID id, int[] positions) throws RemoteException {
+        if (salons.get(id).getNombreAllumettesRestantes() >= positions.length) {
+            for (int position : positions) {
+                retirer(id, position);
+            }
+            salons.get(id).changerProchainJoueur();
+            return true;
+        }
+        return false;
+    }
+
+    private void retirer(UUID id, int position) throws RemoteException {
+        if (salons.get(id).getNombreAllumettesRestantes() > 0) {
+            salons.get(id).retirer(position);
+        }
     }
 
     @Override
     public void serveurJoue(UUID id) throws RemoteException {
         // TODO IA
-        retirer(id, 1);
+        retirer(id, salons.get(id).getAleatPosition());
+
+        salons.get(id).changerProchainJoueur();
     }
 
     @Override
     public int getNombreAllumettes(UUID id) throws RemoteException {
-        return salons.get(id).getAllumettesRestantes();
+        return salons.get(id).getNombreAllumettesRestantes();
     }
 
     @Override
     public boolean isAuJoueurDeJouer(UUID id) throws RemoteException {
         return salons.get(id).isAuJoueurDeJouer();
+    }
+
+    @Override
+    public boolean[] getAllumettesArray(UUID id) throws RemoteException {
+        return salons.get(id).getAllumettesArray();
     }
 }
