@@ -12,16 +12,56 @@ import client.src.ClientMain;
 import commun.IAllumettes;
 
 import javafx.fxml.FXML;
-import javafx.scene.layout.HBox;
+import javafx.scene.Group;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public class AllumettesControleur extends BaseControleur {
     @FXML
-    private HBox hbox_allumettesConteneur;
+    private Pane allumettesConteneur;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
+        for (int i = 0; i < 3; i++) {
+            Rectangle tete = new Rectangle(16, 16);
+            tete.setArcHeight(8);
+            tete.setArcWidth(8);
 
-        partieScriptee();
+            Rectangle tige = new Rectangle(8, 64);
+            tige.setFill(Color.rgb(225, 225, 208));
+            tige.setTranslateX(4);
+            tete.setFill(Color.rgb(130, 39, 30));
+
+            Group allumette = new Group();
+            allumette.getChildren().addAll(tige, tete);
+            allumette.setId(i + "");
+
+            allumette.setOnMouseClicked((e) -> {
+                var target = ((Shape) e.getTarget());
+                System.out.println("target.getParent().getId() " + target.getParent().getId());
+
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    ((Group) target.getParent()).getChildren().forEach((_node) -> {
+                        ((Shape) _node).setEffect(new DropShadow(8, Color.RED));
+                    });
+
+                } else if (e.getButton() == MouseButton.SECONDARY) {
+                    ((Group) target.getParent()).getChildren().forEach((_node) -> {
+                        ((Shape) _node).setEffect(null);
+                    });
+
+                }
+            });
+
+            allumettesConteneur.getChildren().add(allumette);
+
+        }
+
+        // partieScriptee();
     }
 
     private void partieScriptee() {
