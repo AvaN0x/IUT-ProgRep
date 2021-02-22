@@ -21,12 +21,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class AllumettesControleur extends BaseControleur {
+    // TODO fix min size of window
     @FXML
     private Pane allumettesConteneur;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
-        for (int i = 0; i < 3; i++) {
+        int maxWidth = 400;
+        int maxAllumettesLigne = maxWidth % (16 + 8);
+        System.out.println(maxAllumettesLigne);
+
+        for (int i = 0; i < 32; i++) {
             Rectangle tete = new Rectangle(16, 16);
             tete.setArcHeight(8);
             tete.setArcWidth(8);
@@ -57,6 +62,8 @@ public class AllumettesControleur extends BaseControleur {
                 }
             });
 
+            allumette.setLayoutX(4 + (i % maxAllumettesLigne) * (16 + 8));
+            allumette.setLayoutY(4 + (i / maxAllumettesLigne) * (64 + 16));
             allumettesConteneur.getChildren().add(allumette);
 
         }

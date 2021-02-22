@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Group?>
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -9,7 +8,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <Scene xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.src.controleurs.allumettes.AllumettesControleur">
@@ -45,9 +43,7 @@
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                </GridPane.margin>
             </Button>
-            <Pane fx:id="allumettesConteneur" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-               <children>
-               </children></Pane>
+            <Pane fx:id="allumettesConteneur" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
               </children>
       </GridPane>
    </root>
