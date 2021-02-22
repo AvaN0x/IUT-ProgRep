@@ -11,10 +11,20 @@ import java.util.UUID;
 import client.src.ClientMain;
 import commun.IAllumettes;
 
+import javafx.fxml.FXML;
+import javafx.scene.layout.HBox;
+
 public class AllumettesControleur extends BaseControleur {
+    @FXML
+    private HBox hbox_allumettesConteneur;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
+
+        partieScriptee();
+    }
+
+    private void partieScriptee() {
         try {
             IAllumettes partie = (IAllumettes) Naming
                     .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
