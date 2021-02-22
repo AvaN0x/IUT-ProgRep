@@ -23,7 +23,7 @@ public abstract class BaseVue extends Stage {
         _controleur.setVue(this);
 
         this.setScene(new Scene(node));
-        this.getIcons().add(new Image("file:res/icon.png"));
+        this.getIcons().add(new Image("file:client/res/icon.png"));
         this.initModality(Modality.APPLICATION_MODAL);
     }
 }
