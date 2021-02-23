@@ -32,40 +32,25 @@ public class AllumettesControleur extends BaseControleur {
     private IAllumettes partie;
     private UUID id;
 
+    private Group[] allumettes;
+
+    private ArrayList<Integer> allumettesSelectionnee;
+
     // TODO fix min size of window
     @FXML
     private StackPane allumettesConteneur;
     @FXML
     private Button btn_jouer;
 
-    private Group[] allumettes;
-
-    private ArrayList<Integer> allumettesSelectionnee;
-
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
-        btn_jouer.setVisible(false);
-
         try {
             this.partie = (IAllumettes) Naming
                     .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
-            // initPartie();
 
-            var btn_lancerPartie = new Button("Lancer la partie");
-            btn_lancerPartie.setAlignment(Pos.CENTER);
-            btn_lancerPartie.setOnAction((event) -> {
-                try {
-                    initPartie();
-                } catch (RemoteException e) {
-                }
-            });
+            initLobby();
 
-            allumettesConteneur.getChildren().add(btn_lancerPartie);
-
-            // partieScriptee();
             Platform.runLater(() -> {
-                btn_lancerPartie.requestFocus();
-
                 _vue.setOnCloseRequest((event) -> {
                     quitter();
                 });
@@ -75,6 +60,24 @@ public class AllumettesControleur extends BaseControleur {
             showErreurAlerte("Allumettes exception: ", e.toString());
             this.fermer();
         }
+    }
+
+    private void initLobby() throws RemoteException {
+        allumettesConteneur.getChildren().clear();
+        btn_jouer.setVisible(true);
+
+        var btn_lancerPartie = new Button("Lancer la partie");
+        btn_lancerPartie.setAlignment(Pos.CENTER);
+        btn_lancerPartie.setOnAction((event) -> {
+            try {
+                initPartie();
+            } catch (RemoteException e) {
+            }
+        });
+
+        allumettesConteneur.getChildren().add(btn_lancerPartie);
+
+        btn_lancerPartie.requestFocus();
     }
 
     private void initPartie() throws RemoteException {
