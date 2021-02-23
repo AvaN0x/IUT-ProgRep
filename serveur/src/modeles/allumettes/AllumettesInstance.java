@@ -30,14 +30,18 @@ public class AllumettesInstance {
     }
 
     public int getAleatPosition() {
-        int min = 0;
-        int max = allumettesRestantes.length;
-        int i = -1;
-        do {
-            i = (int) (Math.random() * ((max - min) + 1)) + min;
-        } while (!allumettesRestantes[i]);
+        if (getNombreAllumettesRestantes() > 0) {
+            int min = 0;
+            int max = allumettesRestantes.length - 1;
+            int i = -1;
+            do {
+                i = (int) (Math.random() * ((max - min) + 1)) + min;
+            } while (!allumettesRestantes[i]);
 
-        return i >= 0 ? i : -1;
+            return i;
+        }
+        return -1;
+
     }
 
     public void changerProchainJoueur() {

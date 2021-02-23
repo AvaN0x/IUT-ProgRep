@@ -29,6 +29,7 @@ public class MainControleur extends BaseControleur {
         try {
             new client.src.vues.allumettes.NewAllumettesVue().showAndWait();
         } catch (Exception e) {
+            e.printStackTrace();
             showErreurAlerte(e.getClass().getSimpleName(), e.getMessage());
         }
     }

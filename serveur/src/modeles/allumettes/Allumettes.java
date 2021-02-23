@@ -20,11 +20,13 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     public UUID nouveauSalon() throws RemoteException {
         UUID id = UUID.randomUUID(); // Génère un ID
         salons.put(id, new AllumettesInstance()); // Le rajoute à la Map des salons
+        System.out.println("Allumettes >> Salons " + id + " ouvert.");
         return id;
     }
 
     @Override
     public boolean fermerSalon(UUID id) throws RemoteException {
+        System.out.println("Allumettes >> Salons " + id + " fermé.");
         // On retire le salon de la Map et on vérifie que tout s'est bien passé
         return salons.remove(id) != null;
     }
@@ -50,7 +52,9 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     @Override
     public void serveurJoue(UUID id) throws RemoteException {
         // TODO IA
-        retirer(id, salons.get(id).getAleatPosition());
+        int position = salons.get(id).getAleatPosition();
+        if (position != -1)
+            retirer(id, position);
 
         salons.get(id).changerProchainJoueur();
     }

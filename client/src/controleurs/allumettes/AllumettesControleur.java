@@ -26,6 +26,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class AllumettesControleur extends BaseControleur {
+    private IAllumettes partie;
+    private UUID id;
+
     // TODO fix min size of window
     @FXML
     private Pane allumettesConteneur;
@@ -34,12 +37,22 @@ public class AllumettesControleur extends BaseControleur {
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
+        try {
+            this.partie = (IAllumettes) Naming
+                    .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
+
+            this.id = partie.nouveauSalon();
+        } catch (RemoteException | NotBoundException | MalformedURLException e) {
+            showErreurAlerte("Allumettes exception: ", e.toString());
+            this.fermer();
+        }
+
         initAllumettes();
 
-        partieScriptee();
+        // partieScriptee();
         Platform.runLater(() -> {
-            _vue.setOnCloseRequest((e) -> {
-                System.out.println("TEST");
+            _vue.setOnCloseRequest((event) -> {
+                quitter();
             });
         });
     }
@@ -93,6 +106,24 @@ public class AllumettesControleur extends BaseControleur {
         for (int i = 0; i < (allumettesServeur.length > this.allumettes.length ? this.allumettes.length
                 : allumettesServeur.length); i++) {
             this.allumettes[i].setVisible(allumettesServeur[i]);
+        }
+    }
+
+    public void quitter() {
+        try {
+            this.partie.fermerSalon(this.id);
+        } catch (RemoteException e) {
+            showErreurAlerte("Allumettes exception: ", e.toString());
+        }
+        this._vue.close();
+    }
+
+    public void jouer() {
+        try {
+            partie.serveurJoue(id);
+            updateAllumettes(partie.getAllumettesArray(id));
+        } catch (RemoteException e) {
+            showErreurAlerte("Allumettes exception: ", e.toString());
         }
     }
 
