@@ -1,5 +1,6 @@
 package client.src.controleurs.allumettes;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -7,6 +8,7 @@ import java.util.ResourceBundle;
 import client.src.controleurs.BaseControleur;
 
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
@@ -34,8 +36,11 @@ public class AllumettesControleur extends BaseControleur {
     public void initialize(URL location, ResourceBundle ressources) {
         initAllumettes();
 
+        partieScriptee();
         Platform.runLater(() -> {
-            partieScriptee();
+            _vue.setOnCloseRequest((e) -> {
+                System.out.println("TEST");
+            });
         });
     }
 
@@ -109,12 +114,11 @@ public class AllumettesControleur extends BaseControleur {
                 }
                 System.out.println("Nombre d'allumettes restantes : " + partie.getNombreAllumettes(id));
                 updateAllumettes(partie.getAllumettesArray(id));
-                Thread.sleep(500);
             }
             System.out.println((partie.isAuJoueurDeJouer(id) ? "Le serveur" : "Le joueur") + " a gagné la partie !");
 
             partie.fermerSalon(id);
-        } catch (Exception e) {
+        } catch (RemoteException | NotBoundException | MalformedURLException e) {
             showErreurAlerte("Allumettes exception: ", e.toString());
             this.fermer();
         }
