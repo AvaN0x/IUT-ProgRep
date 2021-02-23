@@ -1,6 +1,7 @@
 package commun;
 
 import java.rmi.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public interface IAllumettes extends Remote {
@@ -10,7 +11,7 @@ public interface IAllumettes extends Remote {
 
     public boolean fermerSalon(UUID id) throws RemoteException;
 
-    public boolean retirer(UUID id, int[] positions) throws RemoteException;
+    public boolean jouer(UUID id, ArrayList<Integer> positions) throws RemoteException;
 
     public void serveurJoue(UUID id) throws RemoteException;
 

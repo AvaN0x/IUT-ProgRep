@@ -136,12 +136,12 @@ public class AllumettesControleur extends BaseControleur {
         this._vue.close();
     }
 
-    public void jouer() {
-        try {
-            partie.serveurJoue(id);
+    public void jouer() throws RemoteException {
+        // partie.serveurJoue(id);
+        if (allumettesSelectionnee.size() > 0) {
+            partie.jouer(id, allumettesSelectionnee);
+            allumettesSelectionnee.clear();
             updateAllumettes(partie.getAllumettesArray(id));
-        } catch (RemoteException e) {
-            showErreurAlerte("Allumettes exception: ", e.toString());
         }
     }
 

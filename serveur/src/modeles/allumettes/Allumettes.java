@@ -2,6 +2,7 @@ package serveur.src.modeles.allumettes;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -32,8 +33,8 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     }
 
     @Override
-    public boolean retirer(UUID id, int[] positions) throws RemoteException {
-        if (salons.get(id).getNombreAllumettesRestantes() >= positions.length) {
+    public boolean jouer(UUID id, ArrayList<Integer> positions) throws RemoteException {
+        if (salons.get(id).getNombreAllumettesRestantes() >= positions.size()) {
             for (int position : positions) {
                 retirer(id, position);
             }
