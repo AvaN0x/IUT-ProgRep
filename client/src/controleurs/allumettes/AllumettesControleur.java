@@ -33,8 +33,9 @@ public class AllumettesControleur extends BaseControleur {
     private UUID id;
 
     private Group[] allumettes;
-
     private ArrayList<Integer> allumettesSelectionnee;
+
+    private boolean isAuJoueurDeJouer;
 
     // TODO fix min size of window
     @FXML
@@ -88,6 +89,9 @@ public class AllumettesControleur extends BaseControleur {
         allumettesConteneur.getChildren().clear();
         btn_jouer.setVisible(true);
 
+        isAuJoueurDeJouer = partie.isAuJoueurDeJouer(id);
+        btn_jouer.setDisable(true);
+
         int nbAllumettes = partie.getNombreAllumettes(id);
         int maxWidth = 400;
         int maxAllumettesLigne = maxWidth % (16 + 8);
@@ -120,25 +124,28 @@ public class AllumettesControleur extends BaseControleur {
         }
     }
 
-    private void handleAllumetteClick(MouseEvent event) {
-        var target = ((Shape) event.getTarget());
-        int id = Integer.parseInt(target.getParent().getId());
+    private void handleAllumetteClick(MouseEvent event) throws ClassCastException {
+        if (isAuJoueurDeJouer) {
+            var target = ((Shape) event.getTarget());
+            int id = Integer.parseInt(target.getParent().getId());
 
-        if (event.getButton() == MouseButton.PRIMARY) {
-            if (!isAllumetteSelectionnee(id) && allumettesSelectionnee.size() < IAllumettes.MAX_SELECTION) {
-                ((Group) target.getParent()).getChildren().forEach((shape) -> {
-                    ((Shape) shape).setEffect(new DropShadow(8, Color.RED));
-                });
-                allumettesSelectionnee.add(id);
-            }
+            if (event.getButton() == MouseButton.PRIMARY) {
+                if (!isAllumetteSelectionnee(id) && allumettesSelectionnee.size() < IAllumettes.MAX_SELECTION) {
+                    ((Group) target.getParent()).getChildren().forEach((shape) -> {
+                        ((Shape) shape).setEffect(new DropShadow(8, Color.RED));
+                    });
+                    allumettesSelectionnee.add(id);
+                }
 
-        } else if (event.getButton() == MouseButton.SECONDARY) {
-            if (isAllumetteSelectionnee(id)) {
-                ((Group) target.getParent()).getChildren().forEach((_node) -> {
-                    ((Shape) _node).setEffect(null);
-                });
-                allumettesSelectionnee.remove((Object) id);
+            } else if (event.getButton() == MouseButton.SECONDARY) {
+                if (isAllumetteSelectionnee(id)) {
+                    ((Group) target.getParent()).getChildren().forEach((_node) -> {
+                        ((Shape) _node).setEffect(null);
+                    });
+                    allumettesSelectionnee.remove((Object) id);
+                }
             }
+            btn_jouer.setDisable(allumettesSelectionnee.size() == 0);
         }
     }
 
@@ -166,40 +173,45 @@ public class AllumettesControleur extends BaseControleur {
     }
 
     public void jouer() throws RemoteException {
-        // partie.serveurJoue(id);
         if (allumettesSelectionnee.size() > 0) {
             partie.jouer(id, allumettesSelectionnee);
             allumettesSelectionnee.clear();
             updateAllumettes(partie.getAllumettesArray(id));
         }
-    }
+        isAuJoueurDeJouer = false;
+        btn_jouer.setDisable(true);
 
-    private void partieScriptee() {
-        try {
-            IAllumettes partie = (IAllumettes) Naming
-                    .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
+        if (verifierFinDePartie())
+            return;
 
-            UUID id = partie.nouveauSalon();
-
-            while (partie.getNombreAllumettes(id) > 30) {
-                if (partie.isAuJoueurDeJouer(id)) {
-                    System.out.println("Le joueur joue avec -2 allumette");
-                    // partie.retirer(id, 2);
-                    partie.serveurJoue(id);
-                } else {
-                    System.out.println("Le serveur joue avec -1 allumette");
-                    partie.serveurJoue(id);
-                }
-                System.out.println("Nombre d'allumettes restantes : " + partie.getNombreAllumettes(id));
+        new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                partie.serveurJoue(id);
                 updateAllumettes(partie.getAllumettesArray(id));
-            }
-            System.out.println((partie.isAuJoueurDeJouer(id) ? "Le serveur" : "Le joueur") + " a gagné la partie !");
+                isAuJoueurDeJouer = true;
 
-            partie.fermerSalon(id);
-        } catch (RemoteException | NotBoundException | MalformedURLException e) {
-            showErreurAlerte("Allumettes exception: ", e.toString());
-            this.fermer();
-        }
+                verifierFinDePartie();
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
     }
 
+    private boolean verifierFinDePartie() throws RemoteException {
+        if (partie.getNombreAllumettes(id) <= 0) {
+            System.out.println((partie.isAuJoueurDeJouer(id) ? "Vous avez" : "Le serveur a") + " gagné."); // TODO
+            partie.fermerSalon(id);
+            Platform.runLater(() -> {
+                try {
+                    initLobby();
+                } catch (RemoteException e) {
+                    this._vue.close();
+                }
+            });
+            return true;
+        } else
+            return false;
+    }
 }
