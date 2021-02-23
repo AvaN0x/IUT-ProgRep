@@ -4,6 +4,8 @@ import java.rmi.*;
 import java.util.UUID;
 
 public interface IAllumettes extends Remote {
+    public static final int MAX_SELECTION = 2;
+
     public UUID nouveauSalon() throws RemoteException;
 
     public boolean fermerSalon(UUID id) throws RemoteException;

@@ -15,11 +15,11 @@ import java.util.UUID;
 import client.src.ClientMain;
 import commun.IAllumettes;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -35,71 +35,89 @@ public class AllumettesControleur extends BaseControleur {
 
     private Group[] allumettes;
 
+    private ArrayList<Integer> allumettesSelectionnee;
+
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
         try {
             this.partie = (IAllumettes) Naming
                     .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
+            initPartie();
 
-            this.id = partie.nouveauSalon();
+            // partieScriptee();
+            Platform.runLater(() -> {
+                _vue.setOnCloseRequest((event) -> {
+                    quitter();
+                });
+            });
+
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
             showErreurAlerte("Allumettes exception: ", e.toString());
             this.fermer();
         }
-
-        initAllumettes();
-
-        // partieScriptee();
-        Platform.runLater(() -> {
-            _vue.setOnCloseRequest((event) -> {
-                quitter();
-            });
-        });
     }
 
-    private void initAllumettes() {
+    private void initPartie() throws RemoteException {
+        this.id = partie.nouveauSalon();
+        allumettesSelectionnee = new ArrayList<Integer>();
+
         int maxWidth = 400;
         int maxAllumettesLigne = maxWidth % (16 + 8);
 
         this.allumettes = new Group[35];
         for (int i = 0; i < 35; i++) {
             Rectangle tete = new Rectangle(16, 16);
+            tete.setFill(Color.rgb(130, 39, 30));
             tete.setArcHeight(8);
             tete.setArcWidth(8);
 
             Rectangle tige = new Rectangle(8, 64);
             tige.setFill(Color.rgb(225, 225, 208));
             tige.setTranslateX(4);
-            tete.setFill(Color.rgb(130, 39, 30));
+            tige.setArcHeight(8);
+            tige.setArcWidth(8);
 
             Group allumette = new Group();
             allumette.getChildren().addAll(tige, tete);
             allumette.setId(i + "");
 
-            allumette.setOnMouseClicked((e) -> {
-                var target = ((Shape) e.getTarget());
-                System.out.println("target.getParent().getId() " + target.getParent().getId());
-
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    ((Group) target.getParent()).getChildren().forEach((_node) -> {
-                        ((Shape) _node).setEffect(new DropShadow(8, Color.RED));
-                    });
-
-                } else if (e.getButton() == MouseButton.SECONDARY) {
-                    ((Group) target.getParent()).getChildren().forEach((_node) -> {
-                        ((Shape) _node).setEffect(null);
-                        // ((Shape) _node).setVisible(false);
-                    });
-
-                }
-            });
-
             allumette.setLayoutX(4 + (i % maxAllumettesLigne) * (16 + 8));
             allumette.setLayoutY(4 + (i / maxAllumettesLigne) * (64 + 16));
+
+            allumette.setOnMouseClicked((e) -> handleAllumetteClick(e));
             allumettesConteneur.getChildren().add(allumette);
 
             this.allumettes[i] = allumette;
         }
+    }
+
+    private void handleAllumetteClick(MouseEvent event) {
+        var target = ((Shape) event.getTarget());
+        int id = Integer.parseInt(target.getParent().getId());
+
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (!isAllumetteSelectionnee(id) && allumettesSelectionnee.size() < IAllumettes.MAX_SELECTION) {
+                ((Group) target.getParent()).getChildren().forEach((shape) -> {
+                    ((Shape) shape).setEffect(new DropShadow(8, Color.RED));
+                });
+                allumettesSelectionnee.add(id);
+            }
+
+        } else if (event.getButton() == MouseButton.SECONDARY) {
+            if (isAllumetteSelectionnee(id)) {
+                ((Group) target.getParent()).getChildren().forEach((_node) -> {
+                    ((Shape) _node).setEffect(null);
+                });
+                allumettesSelectionnee.remove((Object) id);
+            }
+        }
+    }
+
+    private boolean isAllumetteSelectionnee(int id) {
+        for (int a : allumettesSelectionnee)
+            if (a == id)
+                return true;
+        return false;
     }
 
     private void updateAllumettes(boolean[] allumettesServeur) {
