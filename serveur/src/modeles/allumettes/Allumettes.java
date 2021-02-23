@@ -38,7 +38,7 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
             for (int position : positions) {
                 retirer(id, position);
             }
-            salons.get(id).changerProchainJoueur();
+            salons.get(id).setIsAuJoueurDeJouer(false);
             return true;
         }
         return false;
@@ -57,7 +57,7 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
         if (position != -1)
             retirer(id, position);
 
-        salons.get(id).changerProchainJoueur();
+        salons.get(id).setIsAuJoueurDeJouer(true);
     }
 
     @Override

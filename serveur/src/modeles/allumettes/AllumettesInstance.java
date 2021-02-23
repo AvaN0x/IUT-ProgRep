@@ -27,7 +27,6 @@ public class AllumettesInstance {
 
     public void retirer(int position) {
         this.allumettesRestantes[position] = false;
-        isAuJoueurDeJouer = !isAuJoueurDeJouer;
     }
 
     public int getAleatPosition() {
@@ -45,8 +44,14 @@ public class AllumettesInstance {
 
     }
 
-    public void changerProchainJoueur() {
-        this.isAuJoueurDeJouer = !this.isAuJoueurDeJouer;
+    /**
+     * Change le prochain joueur dans le cas ou la partie n'est pas terminée
+     * 
+     * @param bool
+     */
+    public void setIsAuJoueurDeJouer(boolean bool) {
+        if (getNombreAllumettesRestantes() > 0)
+            this.isAuJoueurDeJouer = bool;
     }
 
     public boolean isAuJoueurDeJouer() {
