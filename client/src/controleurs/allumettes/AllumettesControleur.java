@@ -16,11 +16,14 @@ import client.src.ClientMain;
 import commun.IAllumettes;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -31,7 +34,9 @@ public class AllumettesControleur extends BaseControleur {
 
     // TODO fix min size of window
     @FXML
-    private Pane allumettesConteneur;
+    private StackPane allumettesConteneur;
+    @FXML
+    private Button btn_jouer;
 
     private Group[] allumettes;
 
@@ -39,13 +44,28 @@ public class AllumettesControleur extends BaseControleur {
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
+        btn_jouer.setVisible(false);
+
         try {
             this.partie = (IAllumettes) Naming
                     .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
-            initPartie();
+            // initPartie();
+
+            var btn_lancerPartie = new Button("Lancer la partie");
+            btn_lancerPartie.setAlignment(Pos.CENTER);
+            btn_lancerPartie.setOnAction((event) -> {
+                try {
+                    initPartie();
+                } catch (RemoteException e) {
+                }
+            });
+
+            allumettesConteneur.getChildren().add(btn_lancerPartie);
 
             // partieScriptee();
             Platform.runLater(() -> {
+                btn_lancerPartie.requestFocus();
+
                 _vue.setOnCloseRequest((event) -> {
                     quitter();
                 });
@@ -59,13 +79,19 @@ public class AllumettesControleur extends BaseControleur {
 
     private void initPartie() throws RemoteException {
         this.id = partie.nouveauSalon();
+
         allumettesSelectionnee = new ArrayList<Integer>();
 
+        allumettesConteneur.getChildren().clear();
+        btn_jouer.setVisible(true);
+
+        int nbAllumettes = partie.getNombreAllumettes(id);
         int maxWidth = 400;
         int maxAllumettesLigne = maxWidth % (16 + 8);
+        int lignesNecessaires = nbAllumettes / maxAllumettesLigne;
 
-        this.allumettes = new Group[35];
-        for (int i = 0; i < 35; i++) {
+        this.allumettes = new Group[nbAllumettes];
+        for (int i = 0; i < nbAllumettes; i++) {
             Rectangle tete = new Rectangle(16, 16);
             tete.setFill(Color.rgb(130, 39, 30));
             tete.setArcHeight(8);
@@ -81,8 +107,8 @@ public class AllumettesControleur extends BaseControleur {
             allumette.getChildren().addAll(tige, tete);
             allumette.setId(i + "");
 
-            allumette.setLayoutX(4 + (i % maxAllumettesLigne) * (16 + 8));
-            allumette.setLayoutY(4 + (i / maxAllumettesLigne) * (64 + 16));
+            allumette.setTranslateX(4 + (i % maxAllumettesLigne) * (16 + 8) - maxWidth / 2);
+            allumette.setTranslateY(4 + (i / maxAllumettesLigne) * (64 + 16) - (lignesNecessaires * (64 + 16)) / 2);
 
             allumette.setOnMouseClicked((e) -> handleAllumetteClick(e));
             allumettesConteneur.getChildren().add(allumette);
