@@ -21,8 +21,12 @@ public class MainControleur extends BaseControleur {
     }
 
     public void openPendu() {
-        // TODO
-        System.out.println("openPendu");
+        try {
+            new client.src.vues.pendu.NewPenduVue().showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErreurAlerte(e.getClass().getSimpleName(), e.getMessage());
+        }
     }
 
     public void openAllumettes() {
