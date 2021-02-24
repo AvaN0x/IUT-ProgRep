@@ -77,6 +77,7 @@ public class AllumettesControleur extends BaseControleur {
     }
 
     private void initLobby(String logString) throws RemoteException {
+        id = null;
         Platform.runLater(() -> {
             allumettesConteneur.getChildren().clear();
             btn_jouer.setVisible(false);
@@ -196,7 +197,8 @@ public class AllumettesControleur extends BaseControleur {
 
     public void quitter() {
         try {
-            this.partie.fermerSalon(this.id);
+            if (id != null)
+                this.partie.fermerSalon(this.id);
         } catch (RemoteException e) {
             showErreurAlerte("Allumettes exception: ", e.toString());
         }
