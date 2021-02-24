@@ -19,10 +19,10 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -42,6 +42,8 @@ public class AllumettesControleur extends BaseControleur {
     private StackPane allumettesConteneur;
     @FXML
     private Button btn_jouer;
+    @FXML
+    private Label lbl_logServeurJoue;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
@@ -64,21 +66,28 @@ public class AllumettesControleur extends BaseControleur {
     }
 
     private void initLobby() throws RemoteException {
-        allumettesConteneur.getChildren().clear();
-        btn_jouer.setVisible(true);
+        initLobby("");
+    }
 
-        var btn_lancerPartie = new Button("Lancer la partie");
-        btn_lancerPartie.setAlignment(Pos.CENTER);
-        btn_lancerPartie.setOnAction((event) -> {
-            try {
-                initPartie();
-            } catch (RemoteException e) {
-            }
+    private void initLobby(String logString) throws RemoteException {
+        Platform.runLater(() -> {
+            allumettesConteneur.getChildren().clear();
+            btn_jouer.setVisible(true);
+            setLog(logString);
+
+            var btn_lancerPartie = new Button("Lancer la partie");
+            btn_lancerPartie.setAlignment(Pos.CENTER);
+            btn_lancerPartie.setOnAction((event) -> {
+                try {
+                    initPartie();
+                } catch (RemoteException e) {
+                }
+            });
+
+            allumettesConteneur.getChildren().add(btn_lancerPartie);
+
+            btn_lancerPartie.requestFocus();
         });
-
-        allumettesConteneur.getChildren().add(btn_lancerPartie);
-
-        btn_lancerPartie.requestFocus();
     }
 
     private void initPartie() throws RemoteException {
@@ -188,7 +197,8 @@ public class AllumettesControleur extends BaseControleur {
             try {
                 Thread.sleep(500);
                 int nombreAllumettesPrise = partie.serveurJoue(id);
-                System.out.println("Le serveur a prit " + nombreAllumettesPrise + " allumettes!"); // TODO
+                setLog("Le serveur a prit " + nombreAllumettesPrise + " allumettes!");
+
                 updateAllumettes(partie.getAllumettesArray(id));
                 isAuJoueurDeJouer = true;
 
@@ -197,22 +207,20 @@ public class AllumettesControleur extends BaseControleur {
                 e.printStackTrace();
             }
         }).start();
-
     }
 
     private boolean verifierFinDePartie() throws RemoteException {
         if (partie.getNombreAllumettes(id) <= 0) {
-            System.out.println((partie.isAuJoueurDeJouer(id) ? "Vous avez" : "Le serveur a") + " gagné."); // TODO
+            initLobby((partie.isAuJoueurDeJouer(id) ? "Vous avez" : "Le serveur a") + " gagné.");
             partie.fermerSalon(id);
-            Platform.runLater(() -> {
-                try {
-                    initLobby();
-                } catch (RemoteException e) {
-                    this._vue.close();
-                }
-            });
             return true;
         } else
             return false;
+    }
+
+    private void setLog(String logString) {
+        Platform.runLater(() -> {
+            lbl_logServeurJoue.setText(logString);
+        });
     }
 }

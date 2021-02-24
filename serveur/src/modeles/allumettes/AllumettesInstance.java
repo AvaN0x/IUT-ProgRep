@@ -7,7 +7,7 @@ public class AllumettesInstance {
     private boolean isAuJoueurDeJouer;
 
     public AllumettesInstance() {
-        allumettesRestantes = new boolean[35];
+        allumettesRestantes = new boolean[21];
         Arrays.fill(allumettesRestantes, true);
         isAuJoueurDeJouer = true;
     }
