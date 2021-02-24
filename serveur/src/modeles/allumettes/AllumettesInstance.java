@@ -2,6 +2,8 @@ package serveur.src.modeles.allumettes;
 
 import java.util.Arrays;
 
+import serveur.src.modeles.Utils;
+
 public class AllumettesInstance {
     private boolean[] allumettesRestantes;
     private boolean isAuJoueurDeJouer;
@@ -35,7 +37,7 @@ public class AllumettesInstance {
             int max = allumettesRestantes.length - 1;
             int i = -1;
             do {
-                i = (int) (Math.random() * ((max - min) + 1)) + min;
+                i = Utils.randomInt(min, max);
             } while (!allumettesRestantes[i]);
 
             return i;
