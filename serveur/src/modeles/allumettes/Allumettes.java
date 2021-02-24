@@ -55,7 +55,6 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     public int serveurJoue(UUID id) throws RemoteException {
         int nombreAllumettesAPrendre = (Utils.randomInt(0, 1) == 0) ? serveurCoupGagnant(id) : serveurCoupAleat(id);
 
-        System.out.println("a prendre : " + nombreAllumettesAPrendre);
         for (int i = 0; i < nombreAllumettesAPrendre; i++)
             retirer(id, salons.get(id).getAleatPosition());
 
@@ -64,12 +63,10 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     }
 
     private int serveurCoupAleat(UUID id) throws RemoteException {
-        System.out.println("serveurCoupAleat");
         return Utils.randomInt(1, 2);
     }
 
     private int serveurCoupGagnant(UUID id) throws RemoteException {
-        System.out.println("serveurCoupGagnant");
         int nombreAllumettesRestantes = salons.get(id).getNombreAllumettesRestantes();
         if (nombreAllumettesRestantes == 1 || nombreAllumettesRestantes == 2)
             return nombreAllumettesRestantes;
