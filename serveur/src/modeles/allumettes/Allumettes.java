@@ -92,4 +92,9 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     public int getNombreAllumettesServeur(UUID id) throws RemoteException {
         return salons.get(id).getNombreAllumettesServeur();
     }
+
+    @Override
+    public int quiCommence(UUID id) throws RemoteException {
+        return salons.get(id).getPremierCoup();
+    }
 }

@@ -89,7 +89,8 @@ public class AllumettesControleur extends BaseControleur {
             btn_lancerPartie.setOnAction((event) -> {
                 try {
                     initPartie();
-                } catch (RemoteException e) {
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
                 }
             });
 
@@ -99,7 +100,7 @@ public class AllumettesControleur extends BaseControleur {
         });
     }
 
-    private void initPartie() throws RemoteException {
+    private void initPartie() throws RemoteException, InterruptedException {
         this.id = partie.nouveauSalon();
 
         allumettesSelectionnee = new ArrayList<Integer>();
@@ -112,7 +113,6 @@ public class AllumettesControleur extends BaseControleur {
         lbl_nombreAllumettesServeur.setText("0");
         setLog("");
 
-        isAuJoueurDeJouer = true;
         btn_jouer.setDisable(true);
 
         int nbAllumettes = partie.getNombreAllumettes(id);
@@ -145,6 +145,14 @@ public class AllumettesControleur extends BaseControleur {
 
             this.allumettes[i] = allumette;
         }
+
+        isAuJoueurDeJouer = partie.quiCommence(id) == IAllumettes.JOUEUR;
+        if (!isAuJoueurDeJouer) {
+            setLog("Le serveur commence à jouer.");
+            serveurJoue(1200);
+        } else {
+            setLog("A vous de commencer à jouer.");
+        }
     }
 
     private void handleAllumetteClick(MouseEvent event) throws ClassCastException {
@@ -153,7 +161,7 @@ public class AllumettesControleur extends BaseControleur {
             int id = Integer.parseInt(target.getParent().getId());
 
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!isAllumetteSelectionnee(id) && allumettesSelectionnee.size() < IAllumettes.MAX_SELECTION) {
+                if (!isAllumetteSelectionnee(id) && allumettesSelectionnee.size() < 2) {
                     ((Group) target.getParent()).getChildren().forEach((shape) -> {
                         ((Shape) shape).setEffect(new DropShadow(8, Color.RED));
                     });
@@ -207,9 +215,17 @@ public class AllumettesControleur extends BaseControleur {
         if (verifierFinDePartie())
             return;
 
+        serveurJoue();
+    }
+
+    private void serveurJoue() {
+        serveurJoue(500);
+    }
+
+    private void serveurJoue(int timer) {
         new Thread(() -> {
             try {
-                Thread.sleep(500);
+                Thread.sleep(timer);
                 int nombreAllumettesPrise = partie.serveurJoue(id);
                 setLog("Le serveur a prit " + nombreAllumettesPrise + " allumettes!");
 

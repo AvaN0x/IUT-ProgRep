@@ -2,6 +2,7 @@ package serveur.src.modeles.allumettes;
 
 import java.util.Arrays;
 
+import commun.IAllumettes;
 import serveur.src.modeles.Utils;
 
 public class AllumettesInstance {
@@ -10,11 +11,14 @@ public class AllumettesInstance {
     private int nombreAllumettesJoueur;
     private int nombreAllumettesServeur;
 
+    private int premierCoup;
+
     public AllumettesInstance() {
         allumettesRestantes = new boolean[21];
         Arrays.fill(allumettesRestantes, true);
         nombreAllumettesJoueur = 0;
         nombreAllumettesServeur = 0;
+        premierCoup = Utils.randomInt(IAllumettes.JOUEUR, IAllumettes.SERVEUR);
     }
 
     public int getNombreAllumettesRestantes() {
@@ -63,6 +67,10 @@ public class AllumettesInstance {
 
     public void addNombreAllumettesServeur(int nombre) {
         this.nombreAllumettesServeur += nombre;
+    }
+
+    public int getPremierCoup() {
+        return this.premierCoup;
     }
 
 }

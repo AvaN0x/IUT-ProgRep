@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public interface IAllumettes extends Remote {
-    public static final int MAX_SELECTION = 2;
+    public static final int JOUEUR = 1;
+    public static final int SERVEUR = JOUEUR + 1;
 
     public UUID nouveauSalon() throws RemoteException;
 
@@ -23,4 +24,5 @@ public interface IAllumettes extends Remote {
 
     public int getNombreAllumettesServeur(UUID id) throws RemoteException;
 
+    public int quiCommence(UUID id) throws RemoteException;
 }
