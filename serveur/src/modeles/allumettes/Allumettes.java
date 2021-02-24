@@ -39,7 +39,7 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
             for (int position : positions) {
                 retirer(id, position);
             }
-            salons.get(id).setIsAuJoueurDeJouer(false);
+            salons.get(id).addNombreAllumettesJoueur(positions.size());
             return true;
         }
         return false;
@@ -58,7 +58,7 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
         for (int i = 0; i < nombreAllumettesAPrendre; i++)
             retirer(id, salons.get(id).getAleatPosition());
 
-        salons.get(id).setIsAuJoueurDeJouer(true);
+        salons.get(id).addNombreAllumettesServeur(nombreAllumettesAPrendre);
         return nombreAllumettesAPrendre;
     }
 
@@ -67,13 +67,10 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     }
 
     private int serveurCoupGagnant(UUID id) throws RemoteException {
-        int nombreAllumettesRestantes = salons.get(id).getNombreAllumettesRestantes();
-        if (nombreAllumettesRestantes == 1 || nombreAllumettesRestantes == 2)
-            return nombreAllumettesRestantes;
-        else if (nombreAllumettesRestantes % 2 == 0) // ? pair on en prend 1
+        if (salons.get(id).getNombreAllumettesServeur() % 2 == 0)
             return 1;
-        else // ? impair on en prend 2
-            return 2;
+        else
+            return salons.get(id).getNombreAllumettesRestantes() >= 2 ? 2 : 1;
     }
 
     @Override
@@ -82,12 +79,17 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     }
 
     @Override
-    public boolean isAuJoueurDeJouer(UUID id) throws RemoteException {
-        return salons.get(id).isAuJoueurDeJouer();
+    public boolean[] getAllumettesArray(UUID id) throws RemoteException {
+        return salons.get(id).getAllumettesArray();
     }
 
     @Override
-    public boolean[] getAllumettesArray(UUID id) throws RemoteException {
-        return salons.get(id).getAllumettesArray();
+    public int getNombreAllumettesJoueur(UUID id) throws RemoteException {
+        return salons.get(id).getNombreAllumettesJoueur();
+    }
+
+    @Override
+    public int getNombreAllumettesServeur(UUID id) throws RemoteException {
+        return salons.get(id).getNombreAllumettesServeur();
     }
 }

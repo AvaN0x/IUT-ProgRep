@@ -43,6 +43,14 @@ public class AllumettesControleur extends BaseControleur {
     private Button btn_jouer;
     @FXML
     private Label lbl_logServeurJoue;
+    @FXML
+    private Label lbl_nombreAllumettesJoueur;
+    @FXML
+    private Label lbl_nombreAllumettesServeur;
+    @FXML
+    private Group grp_joueurAllumettes;
+    @FXML
+    private Group grp_serveurAllumettes;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
@@ -71,7 +79,9 @@ public class AllumettesControleur extends BaseControleur {
     private void initLobby(String logString) throws RemoteException {
         Platform.runLater(() -> {
             allumettesConteneur.getChildren().clear();
-            btn_jouer.setVisible(true);
+            btn_jouer.setVisible(false);
+            grp_joueurAllumettes.setVisible(false);
+            grp_serveurAllumettes.setVisible(false);
             setLog(logString);
 
             var btn_lancerPartie = new Button("Lancer la partie");
@@ -96,8 +106,13 @@ public class AllumettesControleur extends BaseControleur {
 
         allumettesConteneur.getChildren().clear();
         btn_jouer.setVisible(true);
+        grp_joueurAllumettes.setVisible(true);
+        grp_serveurAllumettes.setVisible(true);
+        lbl_nombreAllumettesJoueur.setText("0");
+        lbl_nombreAllumettesServeur.setText("0");
+        setLog("");
 
-        isAuJoueurDeJouer = partie.isAuJoueurDeJouer(id);
+        isAuJoueurDeJouer = true;
         btn_jouer.setDisable(true);
 
         int nbAllumettes = partie.getNombreAllumettes(id);
@@ -209,8 +224,14 @@ public class AllumettesControleur extends BaseControleur {
     }
 
     private boolean verifierFinDePartie() throws RemoteException {
+        int nombreAllumettesJoueur = partie.getNombreAllumettesJoueur(id);
+        int nombreAllumettesServeur = partie.getNombreAllumettesServeur(id);
+        Platform.runLater(() -> {
+            lbl_nombreAllumettesJoueur.setText("" + nombreAllumettesJoueur);
+            lbl_nombreAllumettesServeur.setText("" + nombreAllumettesServeur);
+        });
         if (partie.getNombreAllumettes(id) <= 0) {
-            initLobby((partie.isAuJoueurDeJouer(id) ? "Vous avez" : "Le serveur a") + " gagné.");
+            initLobby((partie.getNombreAllumettesJoueur(id) % 2 == 1 ? "Vous avez" : "Le serveur a") + " gagné.");
             partie.fermerSalon(id);
             return true;
         } else

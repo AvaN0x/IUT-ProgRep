@@ -17,7 +17,10 @@ public interface IAllumettes extends Remote {
 
     public int getNombreAllumettes(UUID id) throws RemoteException;
 
-    public boolean isAuJoueurDeJouer(UUID id) throws RemoteException;
-
     public boolean[] getAllumettesArray(UUID id) throws RemoteException;
+
+    public int getNombreAllumettesJoueur(UUID id) throws RemoteException;
+
+    public int getNombreAllumettesServeur(UUID id) throws RemoteException;
+
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -8,6 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <Scene xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.src.controleurs.allumettes.AllumettesControleur">
@@ -33,7 +35,7 @@
                       <Insets left="4.0" />
                       </GridPane.margin>
                   </Button>
-            <Label fx:id="lbl_logServeurJoue" text="logServeurJoue" GridPane.rowIndex="2">
+            <Label fx:id="lbl_logServeurJoue" text="logServeurJoue" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </GridPane.margin>
@@ -43,7 +45,33 @@
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                </GridPane.margin>
             </Button>
-            <StackPane fx:id="allumettesConteneur" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <StackPane GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <Group fx:id="grp_serveurAllumettes" StackPane.alignment="BOTTOM_RIGHT">
+                     <children>
+                        <Label layoutX="-94.0" layoutY="-97.0" text="Serveur" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1e1d0" height="32.0" layoutX="-71.0" layoutY="-65.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="6.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#82271e" height="14.0" layoutX="-75.0" layoutY="-78.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="14.0" />
+                        <Label fx:id="lbl_nombreAllumettesServeur" layoutX="-86.0" layoutY="-60.0" text="0" />
+                     </children>
+                     <StackPane.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </StackPane.margin>
+                  </Group>
+                  <StackPane fx:id="allumettesConteneur" />
+                  <Group fx:id="grp_joueurAllumettes" StackPane.alignment="BOTTOM_LEFT">
+                     <children>
+                        <Label layoutX="-81.0" layoutY="-97.0" text="Vous" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1e1d0" height="32.0" layoutX="-71.0" layoutY="-65.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="6.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#82271e" height="14.0" layoutX="-75.0" layoutY="-78.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="14.0" />
+                        <Label fx:id="lbl_nombreAllumettesJoueur" layoutX="-57.0" layoutY="-60.0" text="0" />
+                     </children>
+                     <StackPane.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </StackPane.margin>
+                  </Group>
+               </children>
+            </StackPane>
               </children>
       </GridPane>
    </root>

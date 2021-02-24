@@ -6,12 +6,15 @@ import serveur.src.modeles.Utils;
 
 public class AllumettesInstance {
     private boolean[] allumettesRestantes;
-    private boolean isAuJoueurDeJouer;
+
+    private int nombreAllumettesJoueur;
+    private int nombreAllumettesServeur;
 
     public AllumettesInstance() {
         allumettesRestantes = new boolean[21];
         Arrays.fill(allumettesRestantes, true);
-        isAuJoueurDeJouer = true;
+        nombreAllumettesJoueur = 0;
+        nombreAllumettesServeur = 0;
     }
 
     public int getNombreAllumettesRestantes() {
@@ -46,18 +49,20 @@ public class AllumettesInstance {
 
     }
 
-    /**
-     * Change le prochain joueur dans le cas ou la partie n'est pas terminée
-     * 
-     * @param bool
-     */
-    public void setIsAuJoueurDeJouer(boolean bool) {
-        if (getNombreAllumettesRestantes() > 0)
-            this.isAuJoueurDeJouer = bool;
+    public int getNombreAllumettesJoueur() {
+        return this.nombreAllumettesJoueur;
     }
 
-    public boolean isAuJoueurDeJouer() {
-        return this.isAuJoueurDeJouer;
+    public void addNombreAllumettesJoueur(int nombre) {
+        this.nombreAllumettesJoueur += nombre;
+    }
+
+    public int getNombreAllumettesServeur() {
+        return this.nombreAllumettesServeur;
+    }
+
+    public void addNombreAllumettesServeur(int nombre) {
+        this.nombreAllumettesServeur += nombre;
     }
 
 }
