@@ -9,8 +9,8 @@ public class NewAllumettesVue extends BaseVue {
     public NewAllumettesVue() throws IOException {
         super("AllumettesVue.fxml");
         this.setTitle("Jeux des allumettes");
-        this.setMinWidth(300);
-        this.setMinHeight(200);
+        this.setMinWidth(600);
+        this.setMinHeight(400);
     }
 
 }

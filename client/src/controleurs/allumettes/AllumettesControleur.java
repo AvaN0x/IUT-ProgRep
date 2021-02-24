@@ -37,7 +37,6 @@ public class AllumettesControleur extends BaseControleur {
 
     private boolean isAuJoueurDeJouer;
 
-    // TODO fix min size of window
     @FXML
     private StackPane allumettesConteneur;
     @FXML
