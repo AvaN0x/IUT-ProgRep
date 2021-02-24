@@ -45,19 +45,18 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     }
 
     private void retirer(UUID id, int position) throws RemoteException {
-        if (salons.get(id).getNombreAllumettesRestantes() > 0) {
+        if (salons.get(id).getNombreAllumettesRestantes() > 0 && position != -1) {
             salons.get(id).retirer(position);
         }
     }
 
     @Override
-    public void serveurJoue(UUID id) throws RemoteException {
+    public int serveurJoue(UUID id) throws RemoteException {
         // TODO IA
-        int position = salons.get(id).getAleatPosition();
-        if (position != -1)
-            retirer(id, position);
+        retirer(id, salons.get(id).getAleatPosition());
 
         salons.get(id).setIsAuJoueurDeJouer(true);
+        return 1; // ? 1 matches taken
     }
 
     @Override

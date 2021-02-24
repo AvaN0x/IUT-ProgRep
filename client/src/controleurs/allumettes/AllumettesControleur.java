@@ -187,7 +187,8 @@ public class AllumettesControleur extends BaseControleur {
         new Thread(() -> {
             try {
                 Thread.sleep(500);
-                partie.serveurJoue(id);
+                int nombreAllumettesPrise = partie.serveurJoue(id);
+                System.out.println("Le serveur a prit " + nombreAllumettesPrise + " allumettes!"); // TODO
                 updateAllumettes(partie.getAllumettesArray(id));
                 isAuJoueurDeJouer = true;
 

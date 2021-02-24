@@ -13,7 +13,7 @@ public interface IAllumettes extends Remote {
 
     public boolean jouer(UUID id, ArrayList<Integer> positions) throws RemoteException;
 
-    public void serveurJoue(UUID id) throws RemoteException;
+    public int serveurJoue(UUID id) throws RemoteException;
 
     public int getNombreAllumettes(UUID id) throws RemoteException;
 
