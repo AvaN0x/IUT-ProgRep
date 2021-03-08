@@ -5,8 +5,8 @@ import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class ClientMain extends Application {
@@ -18,7 +18,7 @@ public class ClientMain extends Application {
         try {
             URL fxmlURL = getClass().getResource("vues/MainView.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL);
-            Scene scene = new Scene((ScrollPane) fxmlLoader.load());
+            Scene scene = new Scene((GridPane) fxmlLoader.load());
             scene.getStylesheets().add("vues/style.css");
             primaryStage.setScene(scene);
             primaryStage.setTitle("Game server client");

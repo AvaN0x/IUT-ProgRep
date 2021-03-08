@@ -38,4 +38,8 @@ public class MainControleur extends BaseControleur {
         }
     }
 
+    public void openTicTacToe() {
+        System.out.println("openTicTacToe");
+    }
+
 }
