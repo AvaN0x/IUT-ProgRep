@@ -1,13 +1,17 @@
 package client.src.controleurs.pendu;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import client.src.controleurs.BaseControleur;
 
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
+import client.src.ClientMain;
 import commun.IPendu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -22,22 +26,39 @@ public class PenduControleur extends BaseControleur {
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
-        // try {
-        // this.partie = (IPendu) Naming.lookup("rmi://" + ClientMain.HOTE + ":" +
-        // ClientMain.PORT + "/pendu");
+        try {
+            this.partie = (IPendu) Naming.lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/pendu");
 
-        Platform.runLater(() -> {
-
-            afficherPendu(11);
-            _vue.setOnCloseRequest((event) -> {
-                quitter();
+            Platform.runLater(() -> {
+                afficherPendu(11);
+                _vue.setOnCloseRequest((event) -> {
+                    quitter();
+                });
             });
-        });
 
-        // } catch (RemoteException | NotBoundException | MalformedURLException e) {
-        // showErreurAlerte("Pendu exception: ", e.toString());
-        // this.fermer();
-        // }
+        } catch (RemoteException | NotBoundException | MalformedURLException e) {
+            showErreurAlerte("Pendu exception: ", e.toString());
+            this.fermer();
+        }
+    }
+
+    private void initPartie() throws RemoteException {
+        this.id = partie.nouveauSalon();
+
+        var indices = partie.recupIndice(this.id);
+        int nbLettres = partie.recupNbLettres(this.id);
+        for (int i = 0; i < nbLettres; i++) {
+            // TODO: Dessiner ligne pour chaque lettre
+
+            // Si un indice est à cette position
+            if (indices.get(i) != null) {
+                // TODO: afficher lettre
+            }
+        }
+    }
+
+    private void handleLettre() throws RemoteException {
+        partie.envoiLettre(this.id, 'l'); // TODO: Lettre choisie par l'utilisateur
     }
 
     public void quitter() {
