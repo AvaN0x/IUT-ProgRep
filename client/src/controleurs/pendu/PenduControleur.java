@@ -29,6 +29,8 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
     @FXML
     private Group grp_mot;
     @FXML
+    private Group grp_err;
+    @FXML
     private TextField tf_lettre;
 
     @Override
@@ -41,6 +43,13 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
                 _vue.setOnCloseRequest((event) -> {
                     quitter();
                 });
+            });
+
+            tf_lettre.textProperty().addListener((ov, oldValue, newValue) -> {
+                if (tf_lettre.getText().length() > 1) {
+                    String s = tf_lettre.getText().substring(0, 1);
+                    tf_lettre.setText(s);
+                }
             });
 
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
@@ -72,7 +81,6 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
 
     public void handleLettre() throws RemoteException {
         var res = partie.envoiLettre(this.id, tf_lettre.getText().charAt(0));
-        System.out.println(res.getVie());
         afficherPendu(11 - res.getVie());
         if (res.getVie() == 0) {
             finir("Vous avez perdu...");
@@ -93,13 +101,16 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
             if (fini) {
                 finir("Vous avez gagné !");
             }
+        } else {
+            Label lbl_err = new Label(tf_lettre.getText());
+            lbl_err.setTranslateX(8 * grp_err.getChildren().size());
+            grp_err.getChildren().add(lbl_err);
         }
     }
 
     public void finir(String texte) {
         grp_mot.getChildren().clear();
         Label lbl_fin = new Label(texte);
-        // lbl_fin.setTranslateY(16);
         grp_mot.getChildren().add(lbl_fin);
         grp_mot.setTranslateY(-24);
         btn_jouer.setVisible(true);
