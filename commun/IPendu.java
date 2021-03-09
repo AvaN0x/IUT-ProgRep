@@ -37,10 +37,11 @@ public interface IPendu extends Remote {
      * 
      * @param id     l'id du salon
      * @param lettre la lettre donnée par le joueur
-     * @return la nouvelle vie du joueur
+     * @return la nouvelle vie du joueur et la position de la lettre (-1 si elle
+     *         n'existe pas)
      * @throws RemoteException
      */
-    public int envoiLettre(UUID id, char lettre) throws RemoteException;
+    public PenduResultat envoiLettre(UUID id, char lettre) throws RemoteException;
 
     /**
      * Retire un salon de la Map

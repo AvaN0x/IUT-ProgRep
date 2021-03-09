@@ -9,7 +9,7 @@ public class ServeurMain {
 
     public static void main(String[] args) {
         System.out.println(">> Lancement du serveur principal.");
-        new ServeurAllumettes(HOTE, PORT);
-        // new ServeurPendu(HOTE, PORT);
+        // new ServeurAllumettes(HOTE, PORT);
+        new ServeurPendu(HOTE, PORT);
     }
 }

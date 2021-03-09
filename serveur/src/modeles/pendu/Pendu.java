@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import commun.IPendu;
+import commun.PenduResultat;
 
 public class Pendu extends UnicastRemoteObject implements IPendu {
     private static final long serialVersionUID = 725494682670218713L;
@@ -47,13 +48,14 @@ public class Pendu extends UnicastRemoteObject implements IPendu {
     }
 
     @Override
-    public int envoiLettre(UUID id, char lettre) throws RemoteException {
+    public PenduResultat envoiLettre(UUID id, char lettre) throws RemoteException {
         PenduInstance salon = salons.get(id);
-        if (salon.recupererMot().indexOf(lettre) == -1) {
+        int index = salon.recupererMot().indexOf(lettre);
+        if (index == -1) {
             // Si la lettre ne fait pas partie du mot, on fait perdre de la vie au joueur
-            return salon.perdreVie();
+            return new PenduResultat(salon.perdreVie(), index);
         }
-        return salon.recupererVie();
+        return new PenduResultat(salon.recupererVie(), index);
     }
 
     @Override

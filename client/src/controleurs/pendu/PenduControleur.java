@@ -14,6 +14,9 @@ import commun.IPendu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 public class PenduControleur extends client.src.controleurs.BaseControleur {
     private IPendu partie;
@@ -21,6 +24,12 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
 
     @FXML
     private Group grp_pendu;
+    @FXML
+    private Button btn_jouer;
+    @FXML
+    private Group grp_mot;
+    @FXML
+    private TextField tf_lettre;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
@@ -41,6 +50,7 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
     }
 
     private void initPartie() throws RemoteException {
+        btn_jouer.setVisible(false);
         this.id = partie.nouveauSalon();
 
         var indices = partie.recupIndice(this.id);
@@ -48,17 +58,44 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
         // chaque itération
         int nbLettres = partie.recupNbLettres(this.id);
         for (int i = 0; i < nbLettres; i++) {
-            // TODO: Dessiner ligne pour chaque lettre
-
+            Label lbl_placeholder = new Label("_", grp_mot);
             // Si un indice est à cette position
             if (indices.get(i) != null) {
-                // TODO: afficher lettre
+                lbl_placeholder.setText(Character.toString(indices.get(i)));
             }
         }
     }
 
     private void handleLettre() throws RemoteException {
-        partie.envoiLettre(this.id, 'l'); // TODO: Lettre choisie par l'utilisateur
+        var res = partie.envoiLettre(this.id, tf_lettre.getText().charAt(0));
+        afficherPendu(res.getVie());
+        if (res.getVie() == 0) {
+            finir("Vous avez perdu...");
+        } else if (res.getPositionLettre() != -1) {
+            boolean fini = true;
+            for (int i = 0; i < grp_mot.getChildren().size(); i++) {
+                Label lettre = (Label) grp_mot.getChildren().get(i);
+
+                if (res.getPositionLettre() == i) {
+                    lettre.setText(tf_lettre.getText());
+                }
+
+                if (lettre.getText().equals("_")) {
+                    fini = false;
+                }
+            }
+
+            if (fini) {
+                finir("Vous avez gagné !");
+            }
+        }
+    }
+
+    public void finir(String texte) {
+        // grp_mot.getChildren().clear();
+        new Label(texte, grp_mot);
+        btn_jouer.setVisible(true);
+        quitter();
     }
 
     public void quitter() {

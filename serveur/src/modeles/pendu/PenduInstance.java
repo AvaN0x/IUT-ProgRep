@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 
 public class PenduInstance {
     private String mot;
-    private int vie = 5;
+    private int vie = 11;
 
     /**
      * Configure un nouveau salon pour un joueur de pendu.
