@@ -4,8 +4,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import client.src.controleurs.BaseControleur;
-
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -17,7 +15,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 
-public class PenduControleur extends BaseControleur {
+public class PenduControleur extends client.src.controleurs.BaseControleur {
     private IPendu partie;
     private UUID id;
 
@@ -46,6 +44,8 @@ public class PenduControleur extends BaseControleur {
         this.id = partie.nouveauSalon();
 
         var indices = partie.recupIndice(this.id);
+        // En créant une variable ici, on évite de faire un requête au serveur pour
+        // chaque itération
         int nbLettres = partie.recupNbLettres(this.id);
         for (int i = 0; i < nbLettres; i++) {
             // TODO: Dessiner ligne pour chaque lettre

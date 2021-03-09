@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import client.src.controleurs.BaseControleur;
-
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -28,7 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-public class AllumettesControleur extends BaseControleur {
+public class AllumettesControleur extends client.src.controleurs.BaseControleur {
     private IAllumettes partie;
     private UUID id;
 
