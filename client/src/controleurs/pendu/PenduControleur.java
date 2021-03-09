@@ -37,7 +37,7 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
             this.partie = (IPendu) Naming.lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/pendu");
 
             Platform.runLater(() -> {
-                afficherPendu(11);
+                afficherPendu(11 - IPendu.MAX_VIE);
                 _vue.setOnCloseRequest((event) -> {
                     quitter();
                 });
@@ -49,26 +49,31 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
         }
     }
 
-    private void initPartie() throws RemoteException {
+    public void initPartie() throws RemoteException {
         btn_jouer.setVisible(false);
         this.id = partie.nouveauSalon();
 
         var indices = partie.recupIndice(this.id);
         // En créant une variable ici, on évite de faire un requête au serveur pour
         // chaque itération
+        grp_mot.getChildren().clear();
+        grp_mot.setTranslateY(0);
         int nbLettres = partie.recupNbLettres(this.id);
         for (int i = 0; i < nbLettres; i++) {
-            Label lbl_placeholder = new Label("_", grp_mot);
+            Label lbl_placeholder = new Label("_");
+            lbl_placeholder.setTranslateX(8 * i);
             // Si un indice est à cette position
             if (indices.get(i) != null) {
                 lbl_placeholder.setText(Character.toString(indices.get(i)));
             }
+            grp_mot.getChildren().add(lbl_placeholder);
         }
     }
 
-    private void handleLettre() throws RemoteException {
+    public void handleLettre() throws RemoteException {
         var res = partie.envoiLettre(this.id, tf_lettre.getText().charAt(0));
-        afficherPendu(res.getVie());
+        System.out.println(res.getVie());
+        afficherPendu(11 - res.getVie());
         if (res.getVie() == 0) {
             finir("Vous avez perdu...");
         } else if (res.getPositionLettre() != -1) {
@@ -92,10 +97,18 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void finir(String texte) {
-        // grp_mot.getChildren().clear();
-        new Label(texte, grp_mot);
+        grp_mot.getChildren().clear();
+        Label lbl_fin = new Label(texte);
+        // lbl_fin.setTranslateY(16);
+        grp_mot.getChildren().add(lbl_fin);
+        grp_mot.setTranslateY(-24);
         btn_jouer.setVisible(true);
-        quitter();
+        try {
+            if (id != null)
+                this.partie.fermerSalon(this.id);
+        } catch (RemoteException e) {
+            showErreurAlerte("Pendu exception: ", e.toString());
+        }
     }
 
     public void quitter() {

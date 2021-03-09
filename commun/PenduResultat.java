@@ -1,6 +1,8 @@
 package commun;
 
-public class PenduResultat {
+import java.io.Serializable;
+
+public class PenduResultat implements Serializable {
     private int vie;
     private int positionLettre;
 

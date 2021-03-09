@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface IPendu extends Remote {
+    public static int MAX_VIE = 6;
+
     /**
      * Ajoute un nouveau salon à la Map
      * 
