@@ -53,16 +53,19 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
             });
 
             tf_lettre.textProperty().addListener((ov, oldValue, newValue) -> {
-                if (tf_lettre.getText().length() > 0) {
-                    btn_lettre.setDisable(false);
-                } else {
+                if (newValue.length() <= 0) {
                     btn_lettre.setDisable(true);
+                } else {
+                    btn_lettre.setDisable(false);
+                    if (newValue.length() > 1) {
+                        String s = newValue.substring(0, 1);
+                        tf_lettre.setText(s);
+                    } else if (!newValue.matches("[A-zÀ-ú]")) {
+                        String s = newValue.substring(0, 0);
+                        tf_lettre.setText(s);
+                    }
                 }
 
-                if (tf_lettre.getText().length() > 1) {
-                    String s = tf_lettre.getText().substring(0, 1);
-                    tf_lettre.setText(s);
-                }
             });
 
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
@@ -80,7 +83,6 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
 
         var indices = partie.recupIndice(this.id);
         hb_mot.getChildren().clear();
-        hb_mot.setTranslateY(0);
         // En créant une variable ici, on évite de faire un requête au serveur pour
         // chaque itération
         int nbLettres = partie.recupNbLettres(this.id);
@@ -150,7 +152,6 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
         hb_mot.getChildren().clear();
         Label lbl_fin = new Label(texte);
         hb_mot.getChildren().add(lbl_fin);
-        hb_mot.setTranslateY(24);
         btn_jouer.setVisible(true);
         tf_lettre.setDisable(true);
         try {
