@@ -17,6 +17,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 
 public class PenduControleur extends client.src.controleurs.BaseControleur {
     private IPendu partie;
@@ -29,9 +30,9 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
     @FXML
     private Button btn_lettre;
     @FXML
-    private Group grp_mot;
+    private HBox hb_mot;
     @FXML
-    private Group grp_err;
+    private HBox hb_err;
     @FXML
     private TextField tf_lettre;
 
@@ -41,6 +42,8 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
             this.partie = (IPendu) Naming.lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/pendu");
             btn_lettre.setDisable(true);
             tf_lettre.setDisable(true);
+            hb_mot.setViewOrder(0);
+            btn_jouer.setViewOrder(100);
 
             Platform.runLater(() -> {
                 afficherPendu(11 - IPendu.MAX_VIE);
@@ -71,28 +74,28 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
     public void initPartie() throws RemoteException {
         btn_jouer.setVisible(false);
         tf_lettre.setDisable(false);
-        grp_err.getChildren().clear();
+        afficherPendu(11 - IPendu.MAX_VIE);
+        hb_err.getChildren().clear();
         this.id = partie.nouveauSalon();
 
         var indices = partie.recupIndice(this.id);
+        hb_mot.getChildren().clear();
+        hb_mot.setTranslateY(0);
         // En créant une variable ici, on évite de faire un requête au serveur pour
         // chaque itération
-        grp_mot.getChildren().clear();
-        grp_mot.setTranslateY(0);
         int nbLettres = partie.recupNbLettres(this.id);
         for (int i = 0; i < nbLettres; i++) {
             Label lbl_placeholder = new Label("_");
-            lbl_placeholder.setTranslateX(11 * i);
-            grp_mot.getChildren().add(lbl_placeholder);
+            lbl_placeholder.setStyle("-fx-label-padding: 1;");
+            hb_mot.getChildren().add(lbl_placeholder);
         }
 
         for (char c = 0; c <= 'z'; c++) {
             if (indices.get(c) != null) {
                 for (int index : indices.get(c)) {
-                    Label lbl_lettre = (Label) grp_mot.getChildren().get(index);
+                    Label lbl_lettre = (Label) hb_mot.getChildren().get(index);
                     if (index == 0) {
                         lbl_lettre.setText(Character.toString(c).toUpperCase());
-                        lbl_lettre.setTranslateX(-2);
                     } else {
                         lbl_lettre.setText(Character.toString(c));
                     }
@@ -102,7 +105,7 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void handleLettre() throws RemoteException, InterruptedException {
-        for (var element : grp_err.getChildren()) {
+        for (var element : hb_err.getChildren()) {
             Label lbl_err = (Label) element;
             if (lbl_err.getText().toLowerCase().equals(tf_lettre.getText().toLowerCase())) {
                 tf_lettre.clear();
@@ -115,8 +118,8 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
             finir("Vous avez perdu...");
         } else if (res.getPositionLettre() != null) {
             boolean fini = true;
-            for (int i = 0; i < grp_mot.getChildren().size(); i++) {
-                Label lettre = (Label) grp_mot.getChildren().get(i);
+            for (int i = 0; i < hb_mot.getChildren().size(); i++) {
+                Label lettre = (Label) hb_mot.getChildren().get(i);
 
                 if (res.getPositionLettre().contains(i)) {
                     if (i == 0) {
@@ -137,17 +140,17 @@ public class PenduControleur extends client.src.controleurs.BaseControleur {
         }
         if (res.getPositionLettre() == null) {
             Label lbl_err = new Label(tf_lettre.getText().toLowerCase());
-            lbl_err.setTranslateX(11 * grp_err.getChildren().size());
-            grp_err.getChildren().add(lbl_err);
+            lbl_err.setStyle("-fx-label-padding: 1;");
+            hb_err.getChildren().add(lbl_err);
         }
         tf_lettre.clear();
     }
 
     public void finir(String texte) {
-        grp_mot.getChildren().clear();
+        hb_mot.getChildren().clear();
         Label lbl_fin = new Label(texte);
-        grp_mot.getChildren().add(lbl_fin);
-        grp_mot.setTranslateY(-24);
+        hb_mot.getChildren().add(lbl_fin);
+        hb_mot.setTranslateY(24);
         btn_jouer.setVisible(true);
         tf_lettre.setDisable(true);
         try {
