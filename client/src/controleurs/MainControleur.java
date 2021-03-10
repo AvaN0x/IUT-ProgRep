@@ -39,7 +39,12 @@ public class MainControleur extends BaseControleur {
     }
 
     public void openTicTacToe() {
-        System.out.println("openTicTacToe");
+        try {
+            new client.src.vues.tictactoe.NewTicTacToeVue().showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErreurAlerte(e.getClass().getSimpleName(), e.getMessage());
+        }
     }
 
 }
