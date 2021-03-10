@@ -3,6 +3,7 @@ package serveur.src.modeles.pendu;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -43,19 +44,24 @@ public class Pendu extends UnicastRemoteObject implements IPendu {
     }
 
     @Override
-    public Map<Integer, Character> recupIndice(UUID id) throws RemoteException {
+    public Map<Character, ArrayList<Integer>> recupIndice(UUID id) throws RemoteException {
         return salons.get(id).recupIndice();
     }
 
     @Override
     public PenduResultat envoiLettre(UUID id, char lettre) throws RemoteException {
         PenduInstance salon = salons.get(id);
-        int index = salon.recupererMot().indexOf(lettre);
-        if (index == -1) {
-            // Si la lettre ne fait pas partie du mot, on fait perdre de la vie au joueur
-            return new PenduResultat(salon.perdreVie(), index);
+        ArrayList<Integer> indexs = new ArrayList<>();
+        for (int i = 0; i < salon.recupererMot().length(); i++) {
+            if (salon.recupererMot().toLowerCase().charAt(i) == lettre) {
+                indexs.add(i);
+            }
         }
-        return new PenduResultat(salon.recupererVie(), index);
+        if (indexs.size() == 0) {
+            // Si la lettre ne fait pas partie du mot, on fait perdre de la vie au joueur
+            return new PenduResultat(salon.perdreVie(), null);
+        }
+        return new PenduResultat(salon.recupererVie(), indexs);
     }
 
     @Override

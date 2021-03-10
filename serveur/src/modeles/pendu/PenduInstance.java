@@ -2,6 +2,7 @@ package serveur.src.modeles.pendu;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -13,7 +14,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-public class PenduInstance {
+// ? WTF I MUST SERIALIZE THIS
+public class PenduInstance implements Serializable {
     private String mot;
     private int vie = commun.IPendu.MAX_VIE;
 
@@ -79,12 +81,22 @@ public class PenduInstance {
         return this.vie;
     }
 
-    public HashMap<Integer, Character> recupIndice() {
-        HashMap<Integer, Character> map = new HashMap<>();
-        for (int i = 0; i < this.mot.length() / 5; i++) {
+    public HashMap<Character, ArrayList<Integer>> recupIndice() {
+        HashMap<Character, ArrayList<Integer>> map = new HashMap<>();
+        for (int i = 0; i < Math.round(this.mot.length() / 5); i++) {
             Random alea = new Random();
-            int numLettre = alea.nextInt(this.mot.length() + 1);
-            map.put(numLettre, this.mot.charAt(numLettre));
+            int numLettre = alea.nextInt(this.mot.length());
+            ArrayList<Integer> indexs = new ArrayList<>() {
+                {
+                    add(numLettre);
+                }
+            };
+            for (int j = 0; j < this.mot.length(); j++) {
+                if (this.mot.charAt(j) == this.mot.charAt(numLettre)) {
+                    indexs.add(j);
+                }
+            }
+            map.put(this.mot.charAt(numLettre), indexs);
         }
         return map;
     }

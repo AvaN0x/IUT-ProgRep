@@ -32,7 +32,7 @@ public interface IPendu extends Remote {
      * @return Une Map avec la position de la lettre et la lettre
      * @throws RemoteException
      */
-    public Map<Integer, Character> recupIndice(UUID id) throws RemoteException;
+    public Map<Character, java.util.ArrayList<Integer>> recupIndice(UUID id) throws RemoteException;
 
     /**
      * Vérifie si une lettre fait partie du mot d'un salon
