@@ -99,6 +99,11 @@
                               </Button>
                            </children>
                         </GridPane>
+                        <Group fx:id="grp_err" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                           <GridPane.margin>
+                              <Insets bottom="20.0" />
+                           </GridPane.margin>
+                        </Group>
                      </children>
                   </GridPane>
                </children>
