@@ -83,19 +83,23 @@ public class PenduInstance implements Serializable {
 
     public HashMap<Character, ArrayList<Integer>> recupIndice() {
         HashMap<Character, ArrayList<Integer>> map = new HashMap<>();
+        // On définit les indices
         for (int i = 0; i < Math.round(this.mot.length() / 5); i++) {
             Random alea = new Random();
+            // On choisi une lettre au hasard
             int numLettre = alea.nextInt(this.mot.length());
             ArrayList<Integer> indexs = new ArrayList<>() {
                 {
                     add(numLettre);
                 }
             };
+            // On ajoute tout les indexs de la lettre à la liste
             for (int j = 0; j < this.mot.length(); j++) {
                 if (this.mot.charAt(j) == this.mot.charAt(numLettre)) {
                     indexs.add(j);
                 }
             }
+            // On ajoute la liste à la map
             map.put(this.mot.charAt(numLettre), indexs);
         }
         return map;

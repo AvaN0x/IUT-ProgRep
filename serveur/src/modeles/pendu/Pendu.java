@@ -52,7 +52,9 @@ public class Pendu extends UnicastRemoteObject implements IPendu {
     public PenduResultat envoiLettre(UUID id, char lettre) throws RemoteException {
         PenduInstance salon = salons.get(id);
         ArrayList<Integer> indexs = new ArrayList<>();
+        // Pour chaque lettre du mot
         for (int i = 0; i < salon.recupererMot().length(); i++) {
+            // On vérifie si la lettre est celle envoyée par l'utilisateur
             if (salon.recupererMot().toLowerCase().charAt(i) == lettre) {
                 indexs.add(i);
             }
