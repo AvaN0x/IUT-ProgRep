@@ -11,7 +11,7 @@ import serveur.src.modeles.Utils;
 public class TicTacToeInstance {
     private List<ITicTacToeListener> joueurs;
     private String nom;
-
+    private int tour = 0;
     private Cellule[][] plateau;
 
     public TicTacToeInstance() {
@@ -58,8 +58,9 @@ public class TicTacToeInstance {
     public void jouer(int x, int y, ITicTacToeListener listener) {
         if (plateau[x][y] == null) {
             plateau[x][y] = Cellule.values()[joueurs.indexOf(listener) + 1];
+            tour++;
             // On notifie les joueurs que le plateau à changé
-            notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y]));
+            notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y], tour % 2 == joueurs.indexOf(joueur)));
         }
     }
 
