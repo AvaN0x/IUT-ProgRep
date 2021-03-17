@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface ITicTacToe extends Remote {
-    public UUID nouveauSalon(UUID pid) throws RemoteException;
+    public UUID nouveauSalon(ITicTacToeListener listener) throws RemoteException;
 
-    public boolean rejoindreSalon(UUID salonId, UUID pid) throws RemoteException;
+    public boolean rejoindreSalon(UUID salonId, ITicTacToeListener listener) throws RemoteException;
 
-    public boolean quitterSalon(UUID salonId, UUID pid) throws RemoteException;
+    public boolean quitterSalon(UUID salonId, ITicTacToeListener listener) throws RemoteException;
 
-    public boolean jouer(UUID salonId, UUID pid, int cellule) throws RemoteException;
+    public boolean jouer(UUID salonId, int x, int y, ITicTacToeListener listener) throws RemoteException;
 
-    public Cellule[] getAreneArray(UUID salonId, UUID pid) throws RemoteException;
+    public Map<String, UUID> recupererNoms() throws RemoteException;
 }
