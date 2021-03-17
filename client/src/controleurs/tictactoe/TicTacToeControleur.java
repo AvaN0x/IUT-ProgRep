@@ -6,14 +6,24 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     @FXML
     private Pane pane_caseConteneur;
+    @FXML
+    private StackPane sp_mainConteneur;
+    @FXML
+    private VBox vbox_lobbyConteneur;
+    @FXML
+    private TextField tf_entrerSalon;
 
     private int numeroJoueur;
 
@@ -21,10 +31,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
-        System.out.println("TicTacToeControleur");
-        cases = new int[] { 2, 1, 0, 1, 2, 0, 1, 0, 2 };
-        numeroJoueur = 1;
-        reloadCases();
+        initLobby();
     }
 
     public void quitter() {
@@ -35,6 +42,24 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         // showErreurAlerte("Allumettes exception: ", e.toString());
         // }
         this._vue.close();
+    }
+
+    private void initLobby() {
+        sp_mainConteneur.setVisible(false);
+        tf_entrerSalon.setText("");
+        vbox_lobbyConteneur.setVisible(true);
+    }
+
+    public void initPartie() {
+        vbox_lobbyConteneur.setVisible(false);
+        sp_mainConteneur.setVisible(true);
+        cases = new int[] { 0, 0, 0, 0, 2, 0, 0, 0, 0 };
+        numeroJoueur = 1;
+        reloadCases();
+    }
+
+    public void onEnterEntrerSalon() {
+        initPartie();
     }
 
     private void reloadCases() {
