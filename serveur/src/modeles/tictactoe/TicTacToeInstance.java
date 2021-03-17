@@ -50,20 +50,16 @@ public class TicTacToeInstance {
     }
 
     public void retirerJoueur(ITicTacToeListener listener) {
-        if (joueurs.size() > 0) {
-            joueurs.remove(listener);
-        }
+        joueurs.remove(listener);
         // Notifier les autres qu'un joueur a quitté
         notifier(joueur -> joueur.joueurQuitter());
     }
 
     public void jouer(int x, int y, ITicTacToeListener listener) {
-        if (plateau[x][y] == null) {
-            plateau[x][y] = Cellule.values()[joueurs.indexOf(listener) + 1];
-            tour++;
-            // On notifie les joueurs que le plateau à changé
-            notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y], tour % 2 == joueurs.indexOf(joueur)));
-        }
+        plateau[x][y] = Cellule.values()[joueurs.indexOf(listener) + 1];
+        tour++;
+        // On notifie les joueurs que le plateau à changé
+        notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y], tour % 2 == joueurs.indexOf(joueur)));
     }
 
     public void notifier(ConsumerRMITicTacToe action) {

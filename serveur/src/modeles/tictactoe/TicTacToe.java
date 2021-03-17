@@ -49,7 +49,7 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
         } catch (Exception e) {
             return false;
         }
-        return false;
+        return true;
     }
 
     @Override
