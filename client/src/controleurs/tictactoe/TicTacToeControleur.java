@@ -1,8 +1,11 @@
 package client.src.controleurs.tictactoe;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 
+import commun.Cellule;
+import commun.ITicTacToeListener;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
@@ -15,7 +18,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
+public class TicTacToeControleur extends client.src.controleurs.BaseControleur implements ITicTacToeListener {
     @FXML
     private Pane pane_caseConteneur;
     @FXML
@@ -121,6 +124,30 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
             // FIXME temporary
             reloadCases();
         });
+    }
+
+    @Override
+    public void partieLancee() throws RemoteException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void joueurRejoindre() throws RemoteException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void joueurQuiter() throws RemoteException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void celluleMAJ(int x, int y, Cellule status) throws RemoteException {
+        // TODO Auto-generated method stub
+
     }
 
 }
