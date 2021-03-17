@@ -28,6 +28,7 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
         try {
             return salons.get(salonId).ajouterJoueur(listener);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -37,6 +38,7 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
         try {
             salons.get(salonId).retirerJoueur(listener);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -47,6 +49,7 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
         try {
             salons.get(salonId).jouer(x, y, listener);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
