@@ -52,7 +52,7 @@ public class TicTacToeInstance {
             joueurs.remove(listener);
         }
         // Notifier les autres qu'un joueur a quitté
-        notifier(joueur -> joueur.joueurQuiter());
+        notifier(joueur -> joueur.joueurQuitter());
     }
 
     public void jouer(int x, int y, ITicTacToeListener listener) {

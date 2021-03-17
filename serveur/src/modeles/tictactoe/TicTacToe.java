@@ -13,7 +13,7 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
     private HashMap<UUID, TicTacToeInstance> salons;
 
     public TicTacToe() throws RemoteException {
-
+        salons = new HashMap<UUID, TicTacToeInstance>();
     }
 
     @Override
