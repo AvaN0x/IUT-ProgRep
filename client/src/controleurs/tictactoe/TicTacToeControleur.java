@@ -50,6 +50,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     private int numeroJoueur;
 
     private int[] cases;
+    private boolean estTonTour;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
@@ -98,9 +99,10 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                         this.id = salonID;
                         initPartie();
                     } else
-                        showErreurAlerte("TicTacToe exception: ", "Nous n'avons pas pu rejoindre le salon.");
+                        showErreurAlerte("TicTacToe erreur: ", "Nous n'avons pas pu rejoindre le salon.");
                 } catch (RemoteException e) {
                     showErreurAlerte("TicTacToe exception: ", "Nous n'avons pas pu rejoindre le salon.");
+                    e.printStackTrace();
                 }
         });
     }
@@ -110,7 +112,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         var salonID = noms.get(lv_salonListe.getSelectionModel().getSelectedItem());
         if (this.partie.rejoindreSalon(salonID, monitor)) {
             this.id = salonID;
-            initPartie();
+            attendAutreJoueur();
         } else
             showErreurAlerte("TicTacToe exception: ", "Nous n'avons pas pu rejoindre le salon.");
 
@@ -118,38 +120,24 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void nouveauSalon() throws RemoteException {
         this.id = this.partie.nouveauSalon(monitor);
-        initPartie();
+        attendAutreJoueur();
     }
 
     public void initPartie() throws RemoteException {
         vbox_lobbyConteneur.setVisible(false);
         sp_mainConteneur.setVisible(true);
-        cases = new int[] { 0, 0, 0, 0, 2, 0, 0, 0, 0 };
-        numeroJoueur = 1;
 
         Platform.runLater(() -> {
             for (int i = 0; i < 9; i++)
                 caseCliquable((Group) pane_caseConteneur.getChildren().get(i), i);
         });
     }
-    // private void reloadCases() {
-    // Platform.runLater(() -> {
-    // for (int i = 0; i < 9; i++) {
-    // switch (cases[i]) {
-    // case 1:
-    // addCroix((Group) pane_caseConteneur.getChildren().get(i));
-    // break;
-    // case 2:
-    // addRond((Group) pane_caseConteneur.getChildren().get(i));
-    // break;
-    // default:
-    // // TODO check if it is player turn
-    // caseCliquable((Group) pane_caseConteneur.getChildren().get(i), i);
-    // break;
-    // }
-    // }
-    // });
-    // }
+
+    private void attendAutreJoueur() {
+        vbox_lobbyConteneur.setVisible(false);
+        sp_mainConteneur.setVisible(false);
+        setLog("En attente d'un autre joueur...");
+    }
 
     private void addCroix(Group grp) {
         grp.getChildren().clear();
@@ -186,7 +174,10 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         grp.getChildren().add(fond);
 
         grp.setOnMouseClicked((e) -> {
-            cases[i] = numeroJoueur;
+            try {
+                this.partie.jouer(id, i % 3, i / 3, this.monitor);
+            } catch (RemoteException e1) {
+            }
         });
     }
 
@@ -196,14 +187,13 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         });
     }
 
-    public void partieLancee() throws RemoteException {
-        // TODO Auto-generated method stub
-
+    public void partieLancee(boolean estTonTour) throws RemoteException {
+        this.estTonTour = estTonTour;
+        initPartie();
     }
 
     public void joueurRejoindre() throws RemoteException {
-        // TODO Auto-generated method stub
-
+        setLog("Un joueur a rejoint la partie.");
     }
 
     public void joueurQuitter() throws RemoteException {
@@ -213,7 +203,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     }
 
-    public void celluleMAJ(int x, int y, Cellule status) throws RemoteException {
+    public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
+        this.estTonTour = estTonTour;
         switch (status) {
         case JOUEUR_1:
             addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y));
@@ -237,8 +228,8 @@ class TicTacToeMonitor implements ITicTacToeListener, Serializable {
     }
 
     @Override
-    public void partieLancee() throws RemoteException {
-        this.controller.partieLancee();
+    public void partieLancee(boolean estTonTour) throws RemoteException {
+        this.controller.partieLancee(estTonTour);
     }
 
     @Override
@@ -252,7 +243,7 @@ class TicTacToeMonitor implements ITicTacToeListener, Serializable {
     }
 
     @Override
-    public void celluleMAJ(int x, int y, Cellule status) throws RemoteException {
-        this.controller.celluleMAJ(x, y, status);
+    public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
+        this.controller.celluleMAJ(x, y, status, estTonTour);
     }
 }
