@@ -42,7 +42,7 @@ public class TicTacToeInstance {
             joueurs.add(listener);
             if (joueurs.size() == 2) {
                 // Notifier les joueurs que la partie commence
-                notifier(joueur -> joueur.partieLancee());
+                notifier(joueur -> joueur.partieLancee(tour % 2 == joueurs.indexOf(joueur)));
             }
             return true;
         }
