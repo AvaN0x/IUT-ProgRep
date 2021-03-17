@@ -56,7 +56,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     public void initialize(URL location, ResourceBundle ressources) {
         try {
             this.partie = (ITicTacToe) Naming.lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/tictactoe");
-            this.monitor = new TicTacToeMonitor(this);
+            this.monitor = new TicTacToeMonitor();
             initLobby();
 
             Platform.runLater(() -> {
@@ -64,6 +64,44 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                     quitter();
                 });
             });
+
+            new Thread(() -> {
+                while (true) {
+                    if (monitor.estTonTour) {
+                        // TODO
+                    }
+                    if (monitor.aRejoint) {
+                        monitor.aRejoint = false;
+                        Platform.runLater(() -> {
+                            try {
+                                joueurRejoindre();
+                            } catch (RemoteException e) {
+                                // TODO: handle exception
+                            }
+                        });
+                    }
+                    if (monitor.aQuitte) {
+                        monitor.aQuitte = false;
+                        Platform.runLater(() -> {
+                            try {
+                                joueurQuitter();
+                            } catch (RemoteException e) {
+                                // TODO: handle exception
+                            }
+                        });
+                    }
+                    if (monitor.celluleMAJ != null) {
+                        monitor.celluleMAJ = null;
+                        Platform.runLater(() -> {
+                            try {
+                                celluleMAJ(monitor.celluleMAJ, estTonTour);
+                            } catch (RemoteException e) {
+                                // TODO: handle exception
+                            }
+                        });
+                    }
+                }
+            }).start();
 
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
             showErreurAlerte("TicTacToe exception: ", e.toString());
@@ -203,14 +241,14 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     }
 
-    public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
+    public void celluleMAJ(CelluleMAJ cellule, boolean estTonTour) throws RemoteException {
         this.estTonTour = estTonTour;
-        switch (status) {
+        switch (cellule.status) {
         case JOUEUR_1:
-            addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y));
+            addCroix((Group) pane_caseConteneur.getChildren().get(cellule.x + 3 * cellule.y));
             break;
         case JOUEUR_2:
-            addRond((Group) pane_caseConteneur.getChildren().get(x + 3 * y));
+            addRond((Group) pane_caseConteneur.getChildren().get(cellule.x + 3 * cellule.y));
             break;
         default:
             break;
@@ -221,29 +259,44 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 }
 
 class TicTacToeMonitor implements ITicTacToeListener, Serializable {
-    private transient TicTacToeControleur controller;
+    public boolean estTonTour;
+    public boolean aRejoint;
+    public boolean aQuitte;
+    public CelluleMAJ celluleMAJ;
 
-    public TicTacToeMonitor(TicTacToeControleur controller) {
-        this.controller = controller;
+    public TicTacToeMonitor() {
     }
 
     @Override
     public void partieLancee(boolean estTonTour) throws RemoteException {
-        this.controller.partieLancee(estTonTour);
+        this.estTonTour = estTonTour;
     }
 
     @Override
     public void joueurRejoindre() throws RemoteException {
-        this.controller.joueurRejoindre();
+        this.aRejoint = true;
     }
 
     @Override
     public void joueurQuitter() throws RemoteException {
-        this.controller.joueurQuitter();
+        this.aQuitte = true;
     }
 
     @Override
     public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
-        this.controller.celluleMAJ(x, y, status, estTonTour);
+        this.celluleMAJ = new CelluleMAJ(x, y, status);
+        this.estTonTour = estTonTour;
+    }
+}
+
+class CelluleMAJ implements Serializable {
+    public int x;
+    public int y;
+    public Cellule status;
+
+    public CelluleMAJ(int x, int y, Cellule status) {
+        this.x = x;
+        this.y = y;
+        this.status = status;
     }
 }
