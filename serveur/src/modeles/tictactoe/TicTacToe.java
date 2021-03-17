@@ -26,11 +26,10 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
     @Override
     public boolean rejoindreSalon(UUID salonId, ITicTacToeListener listener) throws RemoteException {
         try {
-            salons.get(salonId).ajouterJoueur(listener);
+            return salons.get(salonId).ajouterJoueur(listener);
         } catch (Exception e) {
             return false;
         }
-        return true;
     }
 
     @Override

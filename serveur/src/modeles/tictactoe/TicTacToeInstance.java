@@ -34,17 +34,19 @@ public class TicTacToeInstance {
         return joueurs.size();
     }
 
-    public void ajouterJoueur(ITicTacToeListener listener) {
+    public boolean ajouterJoueur(ITicTacToeListener listener) {
         if (joueurs.size() < 2) {
             // Notifier les autres joueurs qu'un joueur a rejoint la partie
             notifier(joueur -> joueur.joueurRejoindre());
             // On ajoute le joueur à la partie
             joueurs.add(listener);
+            if (joueurs.size() == 2) {
+                // Notifier les joueurs que la partie commence
+                notifier(joueur -> joueur.partieLancee());
+            }
+            return true;
         }
-        if (joueurs.size() == 2) {
-            // Notifier les joueurs que la partie commence
-            notifier(joueur -> joueur.partieLancee());
-        }
+        return false;
     }
 
     public void retirerJoueur(ITicTacToeListener listener) {
