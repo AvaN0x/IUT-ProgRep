@@ -15,11 +15,16 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     @FXML
     private Pane pane_caseConteneur;
 
+    private int numeroJoueur;
+
+    private int[] cases;
+
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
         System.out.println("TicTacToeControleur");
-        int[] cases = { 2, 1, 0, 1, 2, 0, 1, 0, 2 };
-        reloadCases(cases);
+        cases = new int[] { 2, 1, 0, 1, 2, 0, 1, 0, 2 };
+        numeroJoueur = 1;
+        reloadCases();
     }
 
     public void quitter() {
@@ -32,7 +37,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         this._vue.close();
     }
 
-    private void reloadCases(int[] cases) {
+    private void reloadCases() {
         Platform.runLater(() -> {
             for (int i = 0; i < pane_caseConteneur.getChildren().size(); i++) {
                 switch (cases[i]) {
@@ -43,7 +48,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                     addRond((Group) pane_caseConteneur.getChildren().get(i));
                     break;
                 default:
-                    ((Group) pane_caseConteneur.getChildren().get(i)).getChildren().clear();
+                    // TODO check if it is player turn
+                    caseCliquable((Group) pane_caseConteneur.getChildren().get(i), i);
                     break;
                 }
             }
@@ -51,6 +57,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     private void addCroix(Group grp) {
+        grp.getChildren().clear();
+
         Rectangle tige1 = new Rectangle(.1, .7);
         tige1.setFill(Color.rgb(0, 122, 204));
         tige1.setArcHeight(.1);
@@ -66,11 +74,28 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     private void addRond(Group grp) {
+        grp.getChildren().clear();
+
         Circle cercle = new Circle(.28, Color.TRANSPARENT);
         cercle.setStrokeWidth(.1);
         cercle.setStroke(Color.rgb(0, 122, 204));
 
         grp.getChildren().add(cercle);
+    }
+
+    private void caseCliquable(Group grp, int i) {
+        grp.getChildren().clear();
+
+        Rectangle fond = new Rectangle(1, 1);
+        fond.setFill(Color.TRANSPARENT);
+        grp.getChildren().add(fond);
+
+        grp.setOnMouseClicked((e) -> {
+            cases[i] = numeroJoueur;
+
+            // FIXME temporary
+            reloadCases();
+        });
     }
 
 }
