@@ -207,10 +207,10 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         this.estTonTour = estTonTour;
         switch (status) {
         case JOUEUR_1:
-            addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y));
+            Platform.runLater(() -> addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y)));
             break;
         case JOUEUR_2:
-            addRond((Group) pane_caseConteneur.getChildren().get(x + 3 * y));
+            Platform.runLater(() -> addRond((Group) pane_caseConteneur.getChildren().get(x + 3 * y)));
             break;
         default:
             break;
@@ -220,10 +220,10 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
 }
 
-class TicTacToeMonitor implements ITicTacToeListener, Serializable {
+class TicTacToeMonitor extends java.rmi.server.UnicastRemoteObject implements ITicTacToeListener, Serializable {
     private transient TicTacToeControleur controller;
 
-    public TicTacToeMonitor(TicTacToeControleur controller) {
+    public TicTacToeMonitor(TicTacToeControleur controller) throws RemoteException {
         this.controller = controller;
     }
 
