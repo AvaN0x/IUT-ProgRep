@@ -65,8 +65,18 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                 });
             });
 
+            // Dispatch incomming events
             new Thread(() -> {
                 while (true) {
+                    if (monitor.partieLance) {
+                        monitor.partieLance = false;
+                        try {
+                            partieLancee(monitor.estTonTour);
+                        } catch (RemoteException e) {
+                            // TODO: handle exception
+                            e.printStackTrace();
+                        }
+                    }
                     if (monitor.estTonTour) {
                         // TODO
                     }
@@ -77,6 +87,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                                 joueurRejoindre();
                             } catch (RemoteException e) {
                                 // TODO: handle exception
+                                e.printStackTrace();
                             }
                         });
                     }
@@ -87,6 +98,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                                 joueurQuitter();
                             } catch (RemoteException e) {
                                 // TODO: handle exception
+                                e.printStackTrace();
                             }
                         });
                     }
@@ -97,6 +109,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                                 celluleMAJ(monitor.celluleMAJ, estTonTour);
                             } catch (RemoteException e) {
                                 // TODO: handle exception
+                                e.printStackTrace();
                             }
                         });
                     }
@@ -259,6 +272,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 }
 
 class TicTacToeMonitor implements ITicTacToeListener, Serializable {
+    public boolean partieLance;
     public boolean estTonTour;
     public boolean aRejoint;
     public boolean aQuitte;
