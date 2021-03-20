@@ -38,11 +38,13 @@ public class TicTacToeInstance {
         if (joueurs.size() < 2) {
             // Notifier les autres joueurs qu'un joueur a rejoint la partie
             notifier(joueur -> joueur.joueurRejoindre());
+            log("Un joueur a rejoint la partie : " + listener);
             // On ajoute le joueur à la partie
             joueurs.add(listener);
             if (joueurs.size() == 2) {
                 // Notifier les joueurs que la partie commence
                 notifier(joueur -> joueur.partieLancee(tour % 2 == joueurs.indexOf(joueur)));
+                log("Nombre de joueurs atteint. Lancement de la partie.");
             }
             return true;
         }
@@ -51,15 +53,21 @@ public class TicTacToeInstance {
 
     public void retirerJoueur(ITicTacToeListener listener) {
         joueurs.remove(listener);
+        log("Un joueur a quitté la partie : " + listener);
         // Notifier les autres qu'un joueur a quitté
         notifier(joueur -> joueur.joueurQuitter());
     }
 
     public void jouer(int x, int y, ITicTacToeListener listener) {
         plateau[x][y] = Cellule.values()[joueurs.indexOf(listener) + 1];
+        log("Un joueur a joué {x:" + x + " ; y: " + y + "} : " + listener);
         tour++;
         // On notifie les joueurs que le plateau à changé
         notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y], tour % 2 == joueurs.indexOf(joueur)));
+    }
+
+    public void log(Object message) {
+        System.out.println("{" + nom + "} - " + message.toString());
     }
 
     public void notifier(ConsumerRMITicTacToe action) {
