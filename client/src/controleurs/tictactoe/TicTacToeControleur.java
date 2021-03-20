@@ -101,6 +101,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                                 e.printStackTrace();
                             }
                         });
+                        break;
                     }
                     if (monitor.celluleMAJ != null) {
                         monitor.celluleMAJ = null;
