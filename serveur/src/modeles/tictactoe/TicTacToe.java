@@ -41,6 +41,11 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
             e.printStackTrace();
             return false;
         }
+        // On supprime le salon
+        if (salons.get(salonId).getNombreJoueurs() == 0) {
+            System.out.println("[MAIN] - Supression du salon " + salons.remove(salonId).getNom()
+                    + ". Cause : 0 joueurs restants.");
+        }
         return true;
     }
 

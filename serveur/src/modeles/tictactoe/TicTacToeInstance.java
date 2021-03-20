@@ -17,13 +17,15 @@ public class TicTacToeInstance {
     public TicTacToeInstance() {
         joueurs = new LinkedList<>();
         // Génère un nom compréhensible de façon aléatoire
-        nom = Utils.getUrlContents("https://frightanic.com/goodies_content/docker-names.php");
+        nom = Utils.getUrlContents("https://frightanic.com/goodies_content/docker-names.php").trim();
+        log("La partie est créée.");
         plateau = new Cellule[3][3];
     }
 
     public TicTacToeInstance(ITicTacToeListener listener) {
         this();
         joueurs.add(listener);
+        log(listener.hashCode() + " a rejoint la partie");
     }
 
     public String getNom() {
@@ -38,7 +40,7 @@ public class TicTacToeInstance {
         if (joueurs.size() < 2) {
             // Notifier les autres joueurs qu'un joueur a rejoint la partie
             notifier(joueur -> joueur.joueurRejoindre());
-            log("Un joueur a rejoint la partie : " + listener);
+            log(listener.hashCode() + " a rejoint la partie");
             // On ajoute le joueur à la partie
             joueurs.add(listener);
             if (joueurs.size() == 2) {
@@ -53,21 +55,21 @@ public class TicTacToeInstance {
 
     public void retirerJoueur(ITicTacToeListener listener) {
         joueurs.remove(listener);
-        log("Un joueur a quitté la partie : " + listener);
+        log(listener.hashCode() + " a quitté la partie");
         // Notifier les autres qu'un joueur a quitté
         notifier(joueur -> joueur.joueurQuitter());
     }
 
     public void jouer(int x, int y, ITicTacToeListener listener) {
         plateau[x][y] = Cellule.values()[joueurs.indexOf(listener) + 1];
-        log("Un joueur a joué {x:" + x + " ; y: " + y + "} : " + listener);
+        log(listener.hashCode() + " a joué {x:" + x + " ; y: " + y + "}");
         tour++;
         // On notifie les joueurs que le plateau à changé
         notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y], tour % 2 == joueurs.indexOf(joueur)));
     }
 
     public void log(Object message) {
-        System.out.println("{" + nom + "} - " + message.toString());
+        System.out.println(String.format("[%s] - " + message.toString(), nom));
     }
 
     public void notifier(ConsumerRMITicTacToe action) {

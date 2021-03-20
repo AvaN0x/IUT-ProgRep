@@ -197,9 +197,11 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void joueurQuitter() throws RemoteException {
-        showAlerte("TicTacToe", "TicTacToe", "Vous avez gagné car le joueur en face a quitté la partie.",
-                AlertType.INFORMATION);
-        quitter();
+        Platform.runLater(() -> {
+            showAlerte("TicTacToe", "TicTacToe", "Vous avez gagné car le joueur en face a quitté la partie.",
+                    AlertType.INFORMATION);
+            quitter();
+        });
 
     }
 
