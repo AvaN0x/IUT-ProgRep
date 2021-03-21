@@ -92,12 +92,14 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         });
 
         lv_salonListe.setOnMouseClicked((event) -> {
-            if (event.getClickCount() == 2)
+            var index = lv_salonListe.getSelectionModel().getSelectedItem();
+            if (event.getClickCount() == 2 && index != null)
                 try {
-                    var salonID = noms.get(lv_salonListe.getSelectionModel().getSelectedItem());
-                    if (this.partie.rejoindreSalon(salonID, monitor)) {
+                    var salonID = noms.get(index);
+                    if (salonID != null && this.partie.rejoindreSalon(salonID, monitor)) {
                         this.id = salonID;
-                        initPartie();
+                        vbox_lobbyConteneur.setVisible(false);
+                        sp_mainConteneur.setVisible(false);
                     } else
                         showErreurAlerte("TicTacToe erreur: ", "Nous n'avons pas pu rejoindre le salon.");
                 } catch (RemoteException e) {
@@ -109,10 +111,11 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void onEnterEntrerSalon() throws RemoteException {
         var noms = this.partie.recupererNoms();
-        var salonID = noms.get(lv_salonListe.getSelectionModel().getSelectedItem());
-        if (this.partie.rejoindreSalon(salonID, monitor)) {
+        var salonID = noms.get(tf_entrerSalon.getText().trim());
+        if (salonID != null && this.partie.rejoindreSalon(salonID, monitor)) {
             this.id = salonID;
-            attendAutreJoueur();
+            vbox_lobbyConteneur.setVisible(false);
+            sp_mainConteneur.setVisible(false);
         } else
             showErreurAlerte("TicTacToe exception: ", "Nous n'avons pas pu rejoindre le salon.");
 
@@ -124,10 +127,10 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void initPartie() throws RemoteException {
-        vbox_lobbyConteneur.setVisible(false);
-        sp_mainConteneur.setVisible(true);
-
         Platform.runLater(() -> {
+            vbox_lobbyConteneur.setVisible(false);
+            sp_mainConteneur.setVisible(true);
+
             for (int i = 0; i < 9; i++)
                 caseCliquable((Group) pane_caseConteneur.getChildren().get(i), i);
         });
