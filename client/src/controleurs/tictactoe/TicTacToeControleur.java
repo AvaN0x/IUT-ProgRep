@@ -157,6 +157,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         tige2.setRotate(45);
 
         grp.getChildren().addAll(tige1, tige2);
+        grp.setOnMouseClicked(null);
     }
 
     private void addRond(Group grp) {
@@ -167,6 +168,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         cercle.setStroke(Color.rgb(0, 122, 204));
 
         grp.getChildren().add(cercle);
+        grp.setOnMouseClicked(null);
     }
 
     private void caseCliquable(Group grp, int i) {
