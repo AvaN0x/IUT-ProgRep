@@ -65,12 +65,12 @@
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" height="4.0" layoutX="-11.0" layoutY="-49.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="50.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" height="60.0" layoutX="1.0" layoutY="-88.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="4.0" />
-                  <Circle fill="#ffffff00" layoutX="13.0" layoutY="-79.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                  <Circle fill="#ffffff00" layoutX="14.0" layoutY="-78.0" radius="6.0" stroke="#007acc" strokeType="INSIDE" strokeWidth="3.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" height="4.0" layoutX="-11.0" layoutY="-69.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="50.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" height="60.0" layoutX="22.0" layoutY="-88.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="4.0" />
-                  <Circle fill="#ffffff00" layoutX="33.0" layoutY="-37.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" height="4.0" layoutX="6.0" layoutY="-39.0" rotate="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" height="4.0" layoutX="6.0" layoutY="-39.0" rotate="-45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" height="60.0" layoutX="23.0" layoutY="-88.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="4.0" />
+                  <Circle fill="#ffffff00" layoutX="35.0" layoutY="-37.0" radius="6.0" stroke="#007acc" strokeType="INSIDE" strokeWidth="3.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#007acc" height="4.0" layoutX="6.0" layoutY="-39.0" rotate="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#007acc" height="4.0" layoutX="6.0" layoutY="-39.0" rotate="-45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
                </children>
             </Group>
          </children>
