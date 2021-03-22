@@ -46,6 +46,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     private ListView<String> lv_salonListe;
     @FXML
     private Label lbl_log;
+    @FXML
+    private Label lbl_nomSalon;
 
     private boolean estTonTour;
 
@@ -83,6 +85,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         tf_entrerSalon.setText("");
         vbox_lobbyConteneur.setVisible(true);
         setLog("");
+        setNomSalon("");
 
         var noms = this.partie.recupererNoms();
         noms.forEach((key, value) -> {
@@ -90,12 +93,13 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         });
 
         lv_salonListe.setOnMouseClicked((event) -> {
-            var index = lv_salonListe.getSelectionModel().getSelectedItem();
-            if (event.getClickCount() == 2 && index != null)
+            var nomSalon = lv_salonListe.getSelectionModel().getSelectedItem();
+            if (event.getClickCount() == 2 && nomSalon != null)
                 try {
-                    var salonID = noms.get(index);
+                    var salonID = noms.get(nomSalon);
                     if (salonID != null && this.partie.rejoindreSalon(salonID, monitor)) {
                         this.id = salonID;
+                        setNomSalon(nomSalon);
                         vbox_lobbyConteneur.setVisible(false);
                         sp_mainConteneur.setVisible(false);
                     } else
@@ -109,9 +113,11 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void onEnterEntrerSalon() throws RemoteException {
         var noms = this.partie.recupererNoms();
-        var salonID = noms.get(tf_entrerSalon.getText().trim());
+        var nomSalon = tf_entrerSalon.getText().trim();
+        var salonID = noms.get(nomSalon);
         if (salonID != null && this.partie.rejoindreSalon(salonID, monitor)) {
             this.id = salonID;
+            setNomSalon(nomSalon);
             vbox_lobbyConteneur.setVisible(false);
             sp_mainConteneur.setVisible(false);
         } else
@@ -121,6 +127,13 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void nouveauSalon() throws RemoteException {
         this.id = this.partie.nouveauSalon(monitor);
+
+        var noms = this.partie.recupererNoms();
+        noms.forEach((key, value) -> {
+            if (value.equals(this.id))
+                setNomSalon(key);
+        });
+
         attendAutreJoueur();
     }
 
@@ -188,6 +201,12 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     private void setLog(String logString) {
         Platform.runLater(() -> {
             lbl_log.setText(logString);
+        });
+    }
+
+    private void setNomSalon(String nomSalon) {
+        Platform.runLater(() -> {
+            lbl_nomSalon.setText(nomSalon);
         });
     }
 

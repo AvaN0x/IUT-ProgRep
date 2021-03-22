@@ -68,6 +68,11 @@
                   </Group>
                </children>
             </StackPane>
+            <Label fx:id="lbl_nomSalon" alignment="TOP_RIGHT" text="lbl_nomSalon" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+               <GridPane.margin>
+                  <Insets right="30.0" />
+               </GridPane.margin>
+            </Label>
             <VBox fx:id="vbox_lobbyConteneur" alignment="CENTER" GridPane.rowIndex="1">
                <children>
                   <ListView fx:id="lv_salonListe" prefHeight="200.0" prefWidth="200.0">
