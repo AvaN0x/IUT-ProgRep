@@ -85,6 +85,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         sp_mainConteneur.setVisible(false);
         tf_entrerSalon.setText("");
         vbox_lobbyConteneur.setVisible(true);
+        setLog("");
 
         var noms = this.partie.recupererNoms();
         noms.forEach((key, value) -> {
@@ -180,7 +181,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
         grp.setOnMouseClicked((e) -> {
             try {
-                this.partie.jouer(id, i % 3, i / 3, this.monitor);
+                if (estTonTour)
+                    this.partie.jouer(id, i % 3, i / 3, this.monitor);
             } catch (RemoteException e1) {
             }
         });
@@ -193,8 +195,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void partieLancee(boolean estTonTour) throws RemoteException {
-        this.estTonTour = estTonTour;
         initPartie();
+        setTour(estTonTour);
     }
 
     public void joueurRejoindre() throws RemoteException {
@@ -205,13 +207,20 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         Platform.runLater(() -> {
             showAlerte("TicTacToe", "TicTacToe", "Vous avez gagné car le joueur en face a quitté la partie.",
                     AlertType.INFORMATION);
-            quitter();
+            try {
+                if (id != null)
+                    this.partie.quitterSalon(this.id, monitor);
+                initLobby();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                quitter();
+            }
         });
 
     }
 
     public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
-        this.estTonTour = estTonTour;
+        setTour(estTonTour);
         switch (status) {
         case JOUEUR_1:
             Platform.runLater(() -> addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y)));
@@ -222,7 +231,11 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         default:
             break;
         }
+    }
 
+    private void setTour(boolean estTonTour) {
+        this.estTonTour = estTonTour;
+        setLog(this.estTonTour ? "C'est à vous de jouer." : "En attente de l'autre joueur...");
     }
 
 }
