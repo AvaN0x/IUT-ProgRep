@@ -47,9 +47,6 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     @FXML
     private Label lbl_log;
 
-    private int numeroJoueur;
-
-    private int[] cases;
     private boolean estTonTour;
 
     @Override
