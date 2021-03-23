@@ -22,13 +22,13 @@ public class Allumettes extends UnicastRemoteObject implements IAllumettes {
     public UUID nouveauSalon() throws RemoteException {
         UUID id = UUID.randomUUID(); // Génère un ID
         salons.put(id, new AllumettesInstance()); // Le rajoute à la Map des salons
-        System.out.println("Allumettes >> Salons " + id + " ouvert.");
+        System.out.println("Allumettes >> Salon " + id + " ouvert.");
         return id;
     }
 
     @Override
     public boolean fermerSalon(UUID id) throws RemoteException {
-        System.out.println("Allumettes >> Salons " + id + " fermé.");
+        System.out.println("Allumettes >> Salon " + id + " fermé.");
         // On retire le salon de la Map et on vérifie que tout s'est bien passé
         return salons.remove(id) != null;
     }

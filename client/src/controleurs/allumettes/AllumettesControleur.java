@@ -53,11 +53,14 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
         try {
+            // On se connecte a userveur
             this.partie = (IAllumettes) Naming
                     .lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/allumettes");
 
-            initLobby();
+            // On initialise le lobby
+            initLobby("");
 
+            // Evenement lors du clic de la croix de la fenetre
             Platform.runLater(() -> {
                 _vue.setOnCloseRequest((event) -> {
                     quitter();
@@ -70,19 +73,19 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
         }
     }
 
-    private void initLobby() throws RemoteException {
-        initLobby("");
-    }
-
     private void initLobby(String logString) throws RemoteException {
+        // On remet l'id a null
         id = null;
         Platform.runLater(() -> {
+            // On enlève toutes les allumettes
             allumettesConteneur.getChildren().clear();
+            // On cache les données non nécessaires sur le lobby
             btn_jouer.setVisible(false);
             grp_joueurAllumettes.setVisible(false);
             grp_serveurAllumettes.setVisible(false);
             setLog(logString);
 
+            // On ajoute un bouton permettant d'initialiser une partie
             var btn_lancerPartie = new Button("Lancer la partie");
             btn_lancerPartie.setAlignment(Pos.CENTER);
             btn_lancerPartie.setOnAction((event) -> {
@@ -95,15 +98,18 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
 
             allumettesConteneur.getChildren().add(btn_lancerPartie);
 
+            // On demande a ce que le bouton soit selectionné
             btn_lancerPartie.requestFocus();
         });
     }
 
     private void initPartie() throws RemoteException, InterruptedException {
+        // On récupère l'id du nouveau salon
         this.id = partie.nouveauSalon();
 
         allumettesSelectionnee = new ArrayList<Integer>();
 
+        // Initialise les compostants de la page
         allumettesConteneur.getChildren().clear();
         btn_jouer.setVisible(true);
         grp_joueurAllumettes.setVisible(true);
@@ -114,13 +120,18 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
 
         btn_jouer.setDisable(true);
 
+        // On récupère le nombre d'allumettes
         int nbAllumettes = partie.getNombreAllumettes(id);
+        // On fait quelques calcules pour savoir comment on va afficher les allumettes
         int maxWidth = 400;
         int maxAllumettesLigne = maxWidth % (16 + 8);
         int lignesNecessaires = nbAllumettes / maxAllumettesLigne;
 
+        // On initialise un tableau contenant tous les groupes (element JavaFX) des
+        // allumettes
         this.allumettes = new Group[nbAllumettes];
         for (int i = 0; i < nbAllumettes; i++) {
+            // On dessine l'allumette
             Rectangle tete = new Rectangle(16, 16);
             tete.setFill(Color.rgb(130, 39, 30));
             tete.setArcHeight(8);
@@ -136,18 +147,23 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
             allumette.getChildren().addAll(tige, tete);
             allumette.setId(i + "");
 
+            // On positionne l'allumette
             allumette.setTranslateX(4 + (i % maxAllumettesLigne) * (16 + 8) - maxWidth / 2);
             allumette.setTranslateY(4 + (i / maxAllumettesLigne) * (64 + 16) - (lignesNecessaires * (64 + 16)) / 2);
 
+            // Fonction de clic sur une allumette
             allumette.setOnMouseClicked((e) -> handleAllumetteClick(e));
+            // On ajoute l'allumette à la fenetre JavaFX
             allumettesConteneur.getChildren().add(allumette);
 
             this.allumettes[i] = allumette;
         }
 
+        // On affiche un message différent en fonction de qui commence
         isAuJoueurDeJouer = partie.quiCommence(id) == IAllumettes.JOUEUR;
         if (!isAuJoueurDeJouer) {
             setLog("Le serveur commence à jouer.");
+            // On demande au serveur de jouer
             serveurJoue(1200);
         } else {
             setLog("A vous de commencer à jouer.");
@@ -155,11 +171,14 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     }
 
     private void handleAllumetteClick(MouseEvent event) throws ClassCastException {
+        // Le clic sur une allumette ne fonctionne que si c'est au joueur de jouer
         if (isAuJoueurDeJouer) {
+            // On récupère l'id de l'allumette cliquée en fonction de son parent (groupe)
             var target = ((Shape) event.getTarget());
             int id = Integer.parseInt(target.getParent().getId());
 
             if (event.getButton() == MouseButton.PRIMARY) {
+                // Un clic gauche, on selectionne l'allumette
                 if (!isAllumetteSelectionnee(id) && allumettesSelectionnee.size() < 2) {
                     ((Group) target.getParent()).getChildren().forEach((shape) -> {
                         ((Shape) shape).setEffect(new DropShadow(8, Color.RED));
@@ -168,6 +187,7 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
                 }
 
             } else if (event.getButton() == MouseButton.SECONDARY) {
+                // Un clic droit, on déselectionne l'allumette
                 if (isAllumetteSelectionnee(id)) {
                     ((Group) target.getParent()).getChildren().forEach((_node) -> {
                         ((Shape) _node).setEffect(null);
@@ -175,11 +195,16 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
                     allumettesSelectionnee.remove((Object) id);
                 }
             }
+
+            // On rend cliquable ou non le bouton jouer, il faut au minimum une allumette
+            // selectionnée
             btn_jouer.setDisable(allumettesSelectionnee.size() == 0);
         }
     }
 
     private boolean isAllumetteSelectionnee(int id) {
+        // On parcours les allumettes selectionnées pour savoir si l'allumette est déjà
+        // selectionnée
         for (int a : allumettesSelectionnee)
             if (a == id)
                 return true;
@@ -187,6 +212,7 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     }
 
     private void updateAllumettes(boolean[] allumettesServeur) {
+        // On affiche ou cache les allumettes en fonction de leur status
         for (int i = 0; i < (allumettesServeur.length > this.allumettes.length ? this.allumettes.length
                 : allumettesServeur.length); i++) {
             this.allumettes[i].setVisible(allumettesServeur[i]);
@@ -195,7 +221,8 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
 
     public void quitter() {
         try {
-            if (id != null)
+            // Si l'id n'est pas null, on ferme le salon
+            if (this.id != null)
                 this.partie.fermerSalon(this.id);
         } catch (RemoteException e) {
             showErreurAlerte("Allumettes exception: ", e.toString());
@@ -204,6 +231,7 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     }
 
     public void jouer() throws RemoteException {
+        // On ne peut jouer que si le nombre d'allumettes selectionnées est superieur a
         if (allumettesSelectionnee.size() > 0) {
             partie.jouer(id, allumettesSelectionnee);
             allumettesSelectionnee.clear();
@@ -212,19 +240,18 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
         isAuJoueurDeJouer = false;
         btn_jouer.setDisable(true);
 
+        // On vérifie si la partie est terminée
         if (verifierFinDePartie())
             return;
 
-        serveurJoue();
-    }
-
-    private void serveurJoue() {
+        // On demande au serveur de jouer
         serveurJoue(500);
     }
 
     private void serveurJoue(int timer) {
         new Thread(() -> {
             try {
+                // On attend le temps en ms passé en paramètres
                 Thread.sleep(timer);
                 int nombreAllumettesPrise = partie.serveurJoue(id);
                 setLog("Le serveur a prit " + nombreAllumettesPrise + " allumettes!");
@@ -232,6 +259,7 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
                 updateAllumettes(partie.getAllumettesArray(id));
                 isAuJoueurDeJouer = true;
 
+                // On verifie si la partie est terminée
                 verifierFinDePartie();
             } catch (RemoteException | InterruptedException e) {
                 e.printStackTrace();
@@ -240,15 +268,22 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     }
 
     private boolean verifierFinDePartie() throws RemoteException {
+        // On récupère les nombres d'allumettes
         int nombreAllumettesJoueur = partie.getNombreAllumettesJoueur(id);
         int nombreAllumettesServeur = partie.getNombreAllumettesServeur(id);
+        // On met à jour les labels
         Platform.runLater(() -> {
             lbl_nombreAllumettesJoueur.setText("" + nombreAllumettesJoueur);
             lbl_nombreAllumettesServeur.setText("" + nombreAllumettesServeur);
         });
+
+        // S'il n'y a plus d'allumettes, alors la partie est terminée et on ferme le
+        // salon
         if (partie.getNombreAllumettes(id) <= 0) {
-            initLobby((partie.getNombreAllumettesJoueur(id) % 2 == 1 ? "Vous avez" : "Le serveur a") + " gagné.");
+            var joueurGagne = partie.getNombreAllumettesJoueur(id) % 2 == 1;
             partie.fermerSalon(id);
+            id = null;
+            initLobby((joueurGagne ? "Vous avez" : "Le serveur a") + " gagné.");
             return true;
         } else
             return false;
