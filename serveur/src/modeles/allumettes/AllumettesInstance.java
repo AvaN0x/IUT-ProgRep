@@ -14,7 +14,7 @@ public class AllumettesInstance {
     private int premierCoup;
 
     public AllumettesInstance() {
-        allumettesRestantes = new boolean[21]; // TODO random number (odd)
+        allumettesRestantes = new boolean[Utils.randomInt(3, 12) * 2 + 1];
         Arrays.fill(allumettesRestantes, true);
         nombreAllumettesJoueur = 0;
         nombreAllumettesServeur = 0;
