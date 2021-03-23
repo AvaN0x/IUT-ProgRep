@@ -41,7 +41,7 @@ public interface ITicTacToe extends Remote {
 
     /**
      * Inidique au salon désigné par <code>salonId</code> que le joueur
-     * <code>listener</code> à joué au coordonnées <code>x</code>, <code>y</code>
+     * <code>listener</code> a joué aux coordonnées <code>x</code>, <code>y</code>
      * 
      * @param salonId  L'UUID du salon
      * @param x        Colonne de la celulle
