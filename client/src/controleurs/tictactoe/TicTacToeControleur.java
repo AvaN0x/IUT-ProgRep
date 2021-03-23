@@ -211,7 +211,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         });
     }
 
-    public void partieLancee(boolean estTonTour) throws RemoteException {
+    public void partieLancee(boolean estTonTour, Cellule numJoueur) throws RemoteException {
+        // TODO: numJoueur
         initPartie();
         setTour(estTonTour);
     }
@@ -284,8 +285,8 @@ class TicTacToeMonitor extends java.rmi.server.UnicastRemoteObject implements IT
     }
 
     @Override
-    public void partieLancee(boolean estTonTour) throws RemoteException {
-        controller.partieLancee(estTonTour);
+    public void partieLancee(boolean estTonTour, Cellule numJoueur) throws RemoteException {
+        controller.partieLancee(estTonTour, numJoueur);
     }
 
     @Override

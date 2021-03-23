@@ -51,7 +51,8 @@ public class TicTacToeInstance {
             joueurs.add(listener);
             if (joueurs.size() == 2) {
                 // Notifier les joueurs que la partie commence
-                notifier(joueur -> joueur.partieLancee(tour % 2 == joueurs.indexOf(joueur)));
+                notifier(joueur -> joueur.partieLancee(tour % 2 == joueurs.indexOf(joueur),
+                        Cellule.values()[joueurs.indexOf(joueur) + 1]));
                 log("Nombre de joueurs atteint. Lancement de la partie.");
             }
             return true;
