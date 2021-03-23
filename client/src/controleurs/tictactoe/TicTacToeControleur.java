@@ -51,8 +51,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     private Label lbl_nomSalon;
 
     private boolean estTonTour;
-
     private boolean partieTerminee;
+    private Cellule numJoueur;
 
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
@@ -160,16 +160,16 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         setLog("En attente d'un autre joueur...");
     }
 
-    private void addCroix(Group grp) {
+    private void addCroix(Group grp, boolean isMoi) {
         grp.getChildren().clear();
 
         Rectangle tige1 = new Rectangle(.1, .7);
-        tige1.setFill(Color.rgb(0, 122, 204));
+        tige1.setFill(isMoi ? Color.rgb(0, 122, 204) : Color.rgb(204, 0, 85));
         tige1.setArcHeight(.1);
         tige1.setArcWidth(.1);
         tige1.setRotate(-45);
         Rectangle tige2 = new Rectangle(.10, .7);
-        tige2.setFill(Color.rgb(0, 122, 204));
+        tige2.setFill(isMoi ? Color.rgb(0, 122, 204) : Color.rgb(204, 0, 85));
         tige2.setArcHeight(.1);
         tige2.setArcWidth(.1);
         tige2.setRotate(45);
@@ -178,12 +178,12 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         grp.setOnMouseClicked(null);
     }
 
-    private void addRond(Group grp) {
+    private void addRond(Group grp, boolean isMoi) {
         grp.getChildren().clear();
 
         Circle cercle = new Circle(.28, Color.TRANSPARENT);
         cercle.setStrokeWidth(.1);
-        cercle.setStroke(Color.rgb(0, 122, 204));
+        cercle.setStroke(isMoi ? Color.rgb(0, 122, 204) : Color.rgb(204, 0, 85));
 
         grp.getChildren().add(cercle);
         grp.setOnMouseClicked(null);
@@ -218,8 +218,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void partieLancee(boolean estTonTour, Cellule numJoueur) throws RemoteException {
-        // TODO: numJoueur
         initPartie();
+        this.numJoueur = numJoueur;
         setTour(estTonTour);
     }
 
@@ -247,10 +247,12 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         setTour(estTonTour);
         switch (status) {
         case JOUEUR_1:
-            Platform.runLater(() -> addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y)));
+            Platform.runLater(() -> addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y),
+                    numJoueur == Cellule.JOUEUR_1));
             break;
         case JOUEUR_2:
-            Platform.runLater(() -> addRond((Group) pane_caseConteneur.getChildren().get(x + 3 * y)));
+            Platform.runLater(() -> addRond((Group) pane_caseConteneur.getChildren().get(x + 3 * y),
+                    numJoueur == Cellule.JOUEUR_2));
             break;
         default:
             break;
