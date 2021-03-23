@@ -252,6 +252,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     private void setTour(boolean estTonTour) {
         this.estTonTour = estTonTour;
         setLog(this.estTonTour ? "C'est à vous de jouer." : "En attente de l'autre joueur...");
+        sp_mainConteneur.setOpacity(this.estTonTour ? 1. : .6);
     }
 
 }
