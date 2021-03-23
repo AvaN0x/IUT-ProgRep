@@ -81,9 +81,6 @@ public class TicTacToeInstance {
         } else if (estPlateauPlein()) {
             log("C'est une égalité.");
             notifier(joueur -> joueur.aGagner(NullBool.NULL));
-        } else {
-            // log("DEBUG: Status victoire : " + joueurGagnant.toString());
-            // log("DEBUG: Status plateau plein : " + estPlateauPlein());
         }
     }
 
