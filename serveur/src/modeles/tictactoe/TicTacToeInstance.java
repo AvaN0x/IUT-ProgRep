@@ -66,6 +66,62 @@ public class TicTacToeInstance {
         tour++;
         // On notifie les joueurs que le plateau à changé
         notifier(joueur -> joueur.celluleMAJ(x, y, plateau[x][y], tour % 2 == joueurs.indexOf(joueur)));
+        // On vérifie le gagnant
+        Cellule joueurGagnant;
+        if ((joueurGagnant = verificationVictoire()) != Cellule.INOCCUPE) {
+            notifier(joueur -> joueur.aGagner(joueurGagnant == Cellule.values()[joueurs.indexOf(listener) + 1]));
+        }
+    }
+
+    public Cellule verificationVictoire() {
+        // On vérifie si une ligne est présente
+        Cellule gagnantLigne = Cellule.INOCCUPE;
+        for (int x = 0; x < plateau.length; x++) {
+            gagnantLigne = plateau[x][0];
+            for (int y = 0; y < plateau[x].length; y++) {
+                if (plateau[x][y] != gagnantLigne) {
+                    // La ligne n'est pas valide
+                    gagnantLigne = Cellule.INOCCUPE;
+                    break;
+                }
+            }
+        }
+        // On vérifie si une colonne est présente
+        Cellule gagnantColonne = Cellule.INOCCUPE;
+        for (int y = 0; y < plateau.length; y++) {
+            gagnantColonne = plateau[0][y];
+            for (int x = 0; x < plateau[y].length; x++) {
+                if (plateau[x][y] != gagnantColonne) {
+                    // La colonne n'est pas valide
+                    gagnantColonne = Cellule.INOCCUPE;
+                    break;
+                }
+            }
+        }
+        // On vérifie si une diagonale est présente
+        Cellule gagnantDiagonale = plateau[0][0];
+        for (int i = 0; i < plateau.length; i++) {
+            if (plateau[i][i] != gagnantDiagonale) {
+                // La diagonale n'est pas valide
+                gagnantDiagonale = Cellule.INOCCUPE;
+                break;
+            }
+        }
+        Cellule gagnantDiagonaleInv = plateau[3][0];
+        for (int i = 0; i < plateau.length; i++) {
+            if (plateau[plateau.length - i][i] != gagnantDiagonaleInv) {
+                // La diagonale n'est pas valide
+                gagnantDiagonaleInv = Cellule.INOCCUPE;
+                break;
+            }
+        }
+        if (gagnantLigne != Cellule.INOCCUPE)
+            return gagnantLigne;
+        if (gagnantColonne != Cellule.INOCCUPE)
+            return gagnantColonne;
+        if (gagnantDiagonale != Cellule.INOCCUPE)
+            return gagnantDiagonale;
+        return gagnantDiagonaleInv;
     }
 
     public void log(Object message) {
