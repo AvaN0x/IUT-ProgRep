@@ -36,7 +36,8 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
     @Override
     public boolean quitterSalon(UUID salonId, ITicTacToeListener listener) throws RemoteException {
         try {
-            salons.get(salonId).retirerJoueur(listener);
+            if (salons.get(salonId) != null)
+                salons.get(salonId).retirerJoueur(listener);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

@@ -6,6 +6,7 @@ import java.util.List;
 
 import commun.Cellule;
 import commun.ITicTacToeListener;
+import commun.NullBool;
 import serveur.src.modeles.Utils;
 
 public class TicTacToeInstance {
@@ -20,6 +21,11 @@ public class TicTacToeInstance {
         nom = Utils.getUrlContents("https://frightanic.com/goodies_content/docker-names.php").trim();
         log("La partie est créée.");
         plateau = new Cellule[3][3];
+        for (int x = 0; x < plateau.length; x++) {
+            for (int y = 0; y < plateau.length; y++) {
+                plateau[x][y] = Cellule.INOCCUPE;
+            }
+        }
     }
 
     public TicTacToeInstance(ITicTacToeListener listener) {
@@ -69,59 +75,74 @@ public class TicTacToeInstance {
         // On vérifie le gagnant
         Cellule joueurGagnant;
         if ((joueurGagnant = verificationVictoire()) != Cellule.INOCCUPE) {
-            notifier(joueur -> joueur.aGagner(joueurGagnant == Cellule.values()[joueurs.indexOf(listener) + 1]));
+            log(joueurs.get(joueurGagnant.ordinal()).hashCode() + " a gagné");
+            notifier(joueur -> joueur.aGagner(
+                    joueurGagnant == Cellule.values()[joueurs.indexOf(joueur) + 1] ? NullBool.TRUE : NullBool.FALSE));
+        } else if (estPlateauPlein()) {
+            log("C'est une égalité.");
+            notifier(joueur -> joueur.aGagner(NullBool.NULL));
+        } else {
+            // log("DEBUG: Status victoire : " + joueurGagnant.toString());
+            // log("DEBUG: Status plateau plein : " + estPlateauPlein());
         }
     }
 
-    public Cellule verificationVictoire() {
-        // On vérifie si une ligne est présente
-        Cellule gagnantLigne = Cellule.INOCCUPE;
+    public boolean estPlateauPlein() {
         for (int x = 0; x < plateau.length; x++) {
-            gagnantLigne = plateau[x][0];
             for (int y = 0; y < plateau[x].length; y++) {
-                if (plateau[x][y] != gagnantLigne) {
-                    // La ligne n'est pas valide
-                    gagnantLigne = Cellule.INOCCUPE;
-                    break;
+                // Si une case esst vide, c'est que le plateau n'est pas plein
+                if (plateau[x][y] == Cellule.INOCCUPE) {
+                    return false;
                 }
             }
         }
+        return true;
+    }
+
+    public Cellule verificationVictoire() {
         // On vérifie si une colonne est présente
-        Cellule gagnantColonne = Cellule.INOCCUPE;
-        for (int y = 0; y < plateau.length; y++) {
-            gagnantColonne = plateau[0][y];
-            for (int x = 0; x < plateau[y].length; x++) {
-                if (plateau[x][y] != gagnantColonne) {
+        for (int x = 0; x < plateau.length; x++) {
+            Cellule gagnant = plateau[x][0];
+            for (int y = 0; y < plateau[x].length; y++) {
+                if (plateau[x][y] != gagnant) {
                     // La colonne n'est pas valide
-                    gagnantColonne = Cellule.INOCCUPE;
+                    gagnant = Cellule.INOCCUPE;
                     break;
                 }
+            }
+            if (gagnant != Cellule.INOCCUPE) {
+                return gagnant;
+            }
+        }
+        // On vérifie si une ligne est présente
+        for (int y = 0; y < plateau.length; y++) {
+            Cellule gagnant = plateau[0][y];
+            for (int x = 0; x < plateau[y].length; x++) {
+                if (plateau[x][y] != gagnant) {
+                    // La ligne n'est pas valide
+                    gagnant = Cellule.INOCCUPE;
+                    break;
+                }
+            }
+            if (gagnant != Cellule.INOCCUPE) {
+                return gagnant;
             }
         }
         // On vérifie si une diagonale est présente
-        Cellule gagnantDiagonale = plateau[0][0];
-        for (int i = 0; i < plateau.length; i++) {
-            if (plateau[i][i] != gagnantDiagonale) {
-                // La diagonale n'est pas valide
-                gagnantDiagonale = Cellule.INOCCUPE;
-                break;
+        for (int i = 0; i < 3; i += 2) {
+            Cellule gagnant = plateau[i][0];
+            for (int n = 0; n < plateau.length; n++) {
+                if (plateau[i != 2 ? n : (plateau.length - 1) - n][n] != gagnant) {
+                    // La diagonale n'est pas valide
+                    gagnant = Cellule.INOCCUPE;
+                    break;
+                }
+            }
+            if (gagnant != Cellule.INOCCUPE) {
+                return gagnant;
             }
         }
-        Cellule gagnantDiagonaleInv = plateau[2][0];
-        for (int i = 0; i < plateau.length; i++) {
-            if (plateau[(plateau.length - 1) - i][i] != gagnantDiagonaleInv) {
-                // La diagonale n'est pas valide
-                gagnantDiagonaleInv = Cellule.INOCCUPE;
-                break;
-            }
-        }
-        if (gagnantLigne != Cellule.INOCCUPE)
-            return gagnantLigne;
-        if (gagnantColonne != Cellule.INOCCUPE)
-            return gagnantColonne;
-        if (gagnantDiagonale != Cellule.INOCCUPE)
-            return gagnantDiagonale;
-        return gagnantDiagonaleInv;
+        return Cellule.INOCCUPE;
     }
 
     public void log(Object message) {

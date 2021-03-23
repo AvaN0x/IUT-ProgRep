@@ -9,5 +9,5 @@ public interface ITicTacToeListener extends java.rmi.Remote {
 
     public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws java.rmi.RemoteException;
 
-    public void aGagner(boolean estGagnant) throws java.rmi.RemoteException;
+    public void aGagner(NullBool estGagnant) throws java.rmi.RemoteException;
 }

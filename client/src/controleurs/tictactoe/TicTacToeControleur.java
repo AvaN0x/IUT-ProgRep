@@ -13,6 +13,7 @@ import client.src.ClientMain;
 import commun.Cellule;
 import commun.ITicTacToe;
 import commun.ITicTacToeListener;
+import commun.NullBool;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
@@ -255,13 +256,14 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         sp_mainConteneur.setOpacity(this.estTonTour ? 1. : .6);
     }
 
-    public void aGagner(boolean estGagnant) throws RemoteException {
+    public void aGagner(NullBool estGagnant) throws RemoteException {
         Platform.runLater(() -> {
-            if (estGagnant)
+            if (estGagnant == NullBool.TRUE)
                 showAlerte("TicTacToe", "", "Vous avez gagné la partie.", AlertType.INFORMATION);
-            else
+            else if (estGagnant == NullBool.FALSE)
                 showAlerte("TicTacToe", "", "Vous avez perdu la partie.", AlertType.INFORMATION);
-
+            else // TODO:
+                showAlerte("TicTacToe", "", "Draw.", AlertType.INFORMATION);
             try {
                 if (id != null)
                     this.partie.quitterSalon(this.id, monitor);
@@ -302,7 +304,7 @@ class TicTacToeMonitor extends java.rmi.server.UnicastRemoteObject implements IT
     }
 
     @Override
-    public void aGagner(boolean estGagnant) throws RemoteException {
+    public void aGagner(NullBool estGagnant) throws RemoteException {
         controller.aGagner(estGagnant);
     }
 }
