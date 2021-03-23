@@ -12,6 +12,11 @@ import commun.ITicTacToeListener;
 public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
     private HashMap<UUID, TicTacToeInstance> salons;
 
+    /**
+     * Initialise la création du serveur
+     * 
+     * @throws RemoteException
+     */
     public TicTacToe() throws RemoteException {
         salons = new HashMap<UUID, TicTacToeInstance>();
     }
@@ -42,11 +47,12 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
             e.printStackTrace();
             return false;
         }
-        // On supprime le salon
-        if (salons.get(salonId).getNombreJoueurs() == 0) {
-            System.out.println("[MAIN] - Suppression du salon " + salons.remove(salonId).getNom()
-                    + ". Cause : 0 joueurs restants.");
-        }
+        // On supprime le salon si il n'est pas déjà supprimé
+        if (salons.get(salonId) != null)
+            if (salons.get(salonId).getNombreJoueurs() == 0) {
+                System.out.println("[MAIN] - Suppression du salon " + salons.remove(salonId).getNom()
+                        + ". Cause : 0 joueurs restants.");
+            }
         return true;
     }
 
@@ -65,7 +71,7 @@ public class TicTacToe extends UnicastRemoteObject implements ITicTacToe {
     public Map<String, UUID> recupererNoms() throws RemoteException {
         HashMap<String, UUID> res = new HashMap<>();
         for (UUID id : salons.keySet()) {
-            if (salons.get(id).getNombreJoueurs() < 2) {
+            if (salons.get(id).getNombreJoueurs() < 2 && !salons.get(id).getEstLancee()) {
                 res.put(salons.get(id).getNom(), id);
             }
         }

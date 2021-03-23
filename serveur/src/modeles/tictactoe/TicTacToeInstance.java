@@ -14,6 +14,7 @@ public class TicTacToeInstance {
     private String nom;
     private int tour = 0;
     private Cellule[][] plateau;
+    private boolean estLancee;
 
     public TicTacToeInstance() {
         joueurs = new LinkedList<>();
@@ -42,6 +43,10 @@ public class TicTacToeInstance {
         return joueurs.size();
     }
 
+    public boolean getEstLancee() {
+        return estLancee;
+    }
+
     public boolean ajouterJoueur(ITicTacToeListener listener) {
         if (joueurs.size() < 2) {
             // Notifier les autres joueurs qu'un joueur a rejoint la partie
@@ -51,6 +56,7 @@ public class TicTacToeInstance {
             joueurs.add(listener);
             if (joueurs.size() == 2) {
                 // Notifier les joueurs que la partie commence
+                estLancee = true;
                 notifier(joueur -> joueur.partieLancee(tour % 2 == joueurs.indexOf(joueur),
                         Cellule.values()[joueurs.indexOf(joueur) + 1]));
                 log("Nombre de joueurs atteint. Lancement de la partie.");
@@ -76,7 +82,7 @@ public class TicTacToeInstance {
         // On vérifie le gagnant
         Cellule joueurGagnant;
         if ((joueurGagnant = verificationVictoire()) != Cellule.INOCCUPE) {
-            log(joueurs.get(joueurGagnant.ordinal()).hashCode() + " a gagné");
+            log(joueurs.get(joueurGagnant.ordinal() - 1).hashCode() + " a gagné");
             notifier(joueur -> joueur.aGagner(
                     joueurGagnant == Cellule.values()[joueurs.indexOf(joueur) + 1] ? NullBool.TRUE : NullBool.FALSE));
         } else if (estPlateauPlein()) {
@@ -114,8 +120,10 @@ public class TicTacToeInstance {
         }
         // On vérifie si une ligne est présente
         for (int y = 0; y < plateau.length; y++) {
+            log("d: Y = " + y);
             Cellule gagnant = plateau[0][y];
             for (int x = 0; x < plateau[y].length; x++) {
+                log("d: X = " + y);
                 if (plateau[x][y] != gagnant) {
                     // La ligne n'est pas valide
                     gagnant = Cellule.INOCCUPE;
