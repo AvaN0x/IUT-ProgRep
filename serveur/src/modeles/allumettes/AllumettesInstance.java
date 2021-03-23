@@ -21,6 +21,11 @@ public class AllumettesInstance {
         premierCoup = Utils.randomInt(IAllumettes.JOUEUR, IAllumettes.SERVEUR);
     }
 
+    /**
+     * Compte le nombre de d'allumettes pass récupérée
+     * 
+     * @return nombre d'allumettes
+     */
     public int getNombreAllumettesRestantes() {
         int i = 0;
         for (boolean b : allumettesRestantes) {
@@ -38,6 +43,11 @@ public class AllumettesInstance {
         this.allumettesRestantes[position] = false;
     }
 
+    /***
+     * Récupère une position aléatoire disponible
+     * 
+     * @return position
+     */
     public int getAleatPosition() {
         if (getNombreAllumettesRestantes() > 0) {
             int min = 0;
