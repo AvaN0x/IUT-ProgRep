@@ -107,9 +107,9 @@ public class TicTacToeInstance {
                 break;
             }
         }
-        Cellule gagnantDiagonaleInv = plateau[3][0];
+        Cellule gagnantDiagonaleInv = plateau[2][0];
         for (int i = 0; i < plateau.length; i++) {
-            if (plateau[plateau.length - i][i] != gagnantDiagonaleInv) {
+            if (plateau[(plateau.length - 1) - i][i] != gagnantDiagonaleInv) {
                 // La diagonale n'est pas valide
                 gagnantDiagonaleInv = Cellule.INOCCUPE;
                 break;

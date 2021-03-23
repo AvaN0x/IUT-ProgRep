@@ -221,7 +221,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void joueurQuitter() throws RemoteException {
         Platform.runLater(() -> {
-            showAlerte("TicTacToe", "TicTacToe", "Vous avez gagné car le joueur en face a quitté la partie.",
+            showAlerte("TicTacToe", "", "Vous avez gagné car le joueur en face a quitté la partie.",
                     AlertType.INFORMATION);
             try {
                 if (id != null)
@@ -255,6 +255,23 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         sp_mainConteneur.setOpacity(this.estTonTour ? 1. : .6);
     }
 
+    public void aGagner(boolean estGagnant) throws RemoteException {
+        Platform.runLater(() -> {
+            if (estGagnant)
+                showAlerte("TicTacToe", "", "Vous avez gagné la partie.", AlertType.INFORMATION);
+            else
+                showAlerte("TicTacToe", "", "Vous avez perdu la partie.", AlertType.INFORMATION);
+
+            try {
+                if (id != null)
+                    this.partie.quitterSalon(this.id, monitor);
+                initLobby();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                quitter();
+            }
+        });
+    }
 }
 
 class TicTacToeMonitor extends java.rmi.server.UnicastRemoteObject implements ITicTacToeListener, Serializable {
@@ -282,6 +299,11 @@ class TicTacToeMonitor extends java.rmi.server.UnicastRemoteObject implements IT
     @Override
     public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
         controller.celluleMAJ(x, y, status, estTonTour);
+    }
+
+    @Override
+    public void aGagner(boolean estGagnant) throws RemoteException {
+        controller.aGagner(estGagnant);
     }
 }
 
