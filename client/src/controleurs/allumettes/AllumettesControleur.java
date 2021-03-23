@@ -74,8 +74,6 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     }
 
     private void initLobby(String logString) throws RemoteException {
-        // On remet l'id a null
-        id = null;
         Platform.runLater(() -> {
             // On enlève toutes les allumettes
             allumettesConteneur.getChildren().clear();
@@ -222,8 +220,10 @@ public class AllumettesControleur extends client.src.controleurs.BaseControleur 
     public void quitter() {
         try {
             // Si l'id n'est pas null, on ferme le salon
-            if (this.id != null)
+            if (this.id != null) {
                 this.partie.fermerSalon(this.id);
+                id = null;
+            }
         } catch (RemoteException e) {
             showErreurAlerte("Allumettes exception: ", e.toString());
         }

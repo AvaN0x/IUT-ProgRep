@@ -23,7 +23,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -57,10 +56,13 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
         try {
+            // On se connecte a userveur
             this.partie = (ITicTacToe) Naming.lookup("rmi://" + ClientMain.HOTE + ":" + ClientMain.PORT + "/tictactoe");
             this.monitor = new TicTacToeMonitor(this);
+            // On initialise le lobby
             initLobby();
 
+            // Evenement lors du clic de la croix de la fenetre
             Platform.runLater(() -> {
                 _vue.setOnCloseRequest((event) -> {
                     quitter();
@@ -75,6 +77,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void quitter() {
         try {
+            // Si l'id n'est pas null, on ferme le salon
             if (id != null) {
                 this.partie.quitterSalon(this.id, monitor);
                 this.id = null;
@@ -86,23 +89,28 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     private void initLobby() throws RemoteException {
+        // On affiche que ce qui est necessaire sur la fenetre
         sp_mainConteneur.setVisible(false);
         tf_entrerSalon.setText("");
         vbox_lobbyConteneur.setVisible(true);
         setLog("");
         setNomSalon("");
 
+        // On rerempli la liste des salonss
         lv_salonListe.getItems().clear();
         var noms = this.partie.recupererNoms();
         noms.forEach((key, value) -> {
             lv_salonListe.getItems().add(key);
         });
 
+        // Evenement de clic sur un element de la liste
         lv_salonListe.setOnMouseClicked((event) -> {
+            // On recupere le nom du salon sur le quel l'utilisateur a cliqué
             var nomSalon = lv_salonListe.getSelectionModel().getSelectedItem();
             if (event.getClickCount() == 2 && nomSalon != null)
                 try {
                     var salonID = noms.get(nomSalon);
+                    // Verification de si le salon existe
                     if (salonID != null && this.partie.rejoindreSalon(salonID, monitor)) {
                         this.id = salonID;
                         setNomSalon(nomSalon);
@@ -118,9 +126,11 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void onEnterEntrerSalon() throws RemoteException {
+        // Fonction lorsque l'utilisateur fait entrer dans la textfield
         var noms = this.partie.recupererNoms();
         var nomSalon = tf_entrerSalon.getText().trim();
         var salonID = noms.get(nomSalon);
+        // Verification de si le salon existe
         if (salonID != null && this.partie.rejoindreSalon(salonID, monitor)) {
             this.id = salonID;
             setNomSalon(nomSalon);
@@ -132,29 +142,35 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void nouveauSalon() throws RemoteException {
+        // Fonction lors du clic sur le bouton de nouveau salon
         this.id = this.partie.nouveauSalon(monitor);
 
+        // On récupère le nom du salon pour l'afficher
         var noms = this.partie.recupererNoms();
         noms.forEach((key, value) -> {
             if (value.equals(this.id))
                 setNomSalon(key);
         });
 
+        // On attend un autre joueur
         attendAutreJoueur();
     }
 
     public void initPartie() throws RemoteException {
         Platform.runLater(() -> {
+            // On affiche ce qui est necessaire
             vbox_lobbyConteneur.setVisible(false);
             sp_mainConteneur.setVisible(true);
             partieTerminee = false;
 
+            // On initialise les cases du jeu
             for (int i = 0; i < 9; i++)
                 caseCliquable((Group) pane_caseConteneur.getChildren().get(i), i);
         });
     }
 
     private void attendAutreJoueur() {
+        // Affiche d'attente d'un autre joueur
         vbox_lobbyConteneur.setVisible(false);
         sp_mainConteneur.setVisible(false);
         setLog("En attente d'un autre joueur...");
@@ -163,6 +179,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     private void addCroix(Group grp, boolean isMoi) {
         grp.getChildren().clear();
 
+        // On dessine la croix
         Rectangle tige1 = new Rectangle(.1, .7);
         tige1.setFill(isMoi ? Color.rgb(0, 122, 204) : Color.rgb(204, 0, 85));
         tige1.setArcHeight(.1);
@@ -175,27 +192,32 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         tige2.setRotate(45);
 
         grp.getChildren().addAll(tige1, tige2);
+        // On enleve l'effet de clic
         grp.setOnMouseClicked(null);
     }
 
     private void addRond(Group grp, boolean isMoi) {
         grp.getChildren().clear();
 
+        // On dessine le rond
         Circle cercle = new Circle(.28, Color.TRANSPARENT);
         cercle.setStrokeWidth(.1);
         cercle.setStroke(isMoi ? Color.rgb(0, 122, 204) : Color.rgb(204, 0, 85));
 
         grp.getChildren().add(cercle);
+        // On enleve l'effet de clic
         grp.setOnMouseClicked(null);
     }
 
     private void caseCliquable(Group grp, int i) {
         grp.getChildren().clear();
 
+        // On dessine une forme de fond de case pour cliquer dessus
         Rectangle fond = new Rectangle(1, 1);
         fond.setFill(Color.TRANSPARENT);
         grp.getChildren().add(fond);
 
+        // Evenement de clic sur une case pour la jouer
         grp.setOnMouseClicked((e) -> {
             try {
                 if (estTonTour)
@@ -218,6 +240,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void partieLancee(boolean estTonTour, Cellule numJoueur) throws RemoteException {
+        // La partie peut etre lancée, on l'initialise
         initPartie();
         this.numJoueur = numJoueur;
         setTour(estTonTour);
@@ -228,6 +251,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void joueurQuitter() throws RemoteException {
+        // Un joueur a quitté la partie
+        // Ne s'affiche que lorsque la partie n'est pas déjà terminée
         if (!partieTerminee)
             Platform.runLater(() -> {
                 showAlerte("TicTacToe", "", "Vous avez gagné car le joueur en face a quitté la partie.",
@@ -245,6 +270,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
         setTour(estTonTour);
+        // Dessine sur la case concernées
         switch (status) {
         case JOUEUR_1:
             Platform.runLater(() -> addCroix((Group) pane_caseConteneur.getChildren().get(x + 3 * y),
@@ -260,14 +286,17 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     private void setTour(boolean estTonTour) {
+        // Affiche si c'est le tour du joueur ou non
         this.estTonTour = estTonTour;
         setLog(this.estTonTour ? "C'est à vous de jouer." : "En attente de l'autre joueur...");
+        // Effet d'opacité sur la grille pour reconnaitre si c'est au client de jouer
         sp_mainConteneur.setOpacity(this.estTonTour ? 1. : .6);
     }
 
     public void aGagner(NullBool estGagnant) throws RemoteException {
         Platform.runLater(() -> {
             partieTerminee = true;
+            // On observe le cas de fin de partie
             if (estGagnant == NullBool.TRUE)
                 showAlerte("TicTacToe", "", "Vous avez gagné la partie.", AlertType.INFORMATION);
             else if (estGagnant == NullBool.FALSE)
@@ -276,10 +305,12 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
                 showAlerte("TicTacToe", "", "Vous avez fait égalité.", AlertType.INFORMATION);
 
             try {
+                // On fait quitter le salon au joueur
                 if (id != null) {
                     this.partie.quitterSalon(this.id, monitor);
                     this.id = null;
                 }
+                // On réinitialise le lobby
                 initLobby();
             } catch (RemoteException e) {
                 e.printStackTrace();
