@@ -52,6 +52,8 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     private boolean estTonTour;
 
+    private boolean partieTerminee;
+
     @Override
     public void initialize(URL location, ResourceBundle ressources) {
         try {
@@ -73,8 +75,10 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void quitter() {
         try {
-            if (id != null)
+            if (id != null) {
                 this.partie.quitterSalon(this.id, monitor);
+                this.id = null;
+            }
         } catch (RemoteException e) {
             showErreurAlerte("TicTacToe exception: ", e.toString());
         }
@@ -88,6 +92,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         setLog("");
         setNomSalon("");
 
+        lv_salonListe.getItems().clear();
         var noms = this.partie.recupererNoms();
         noms.forEach((key, value) -> {
             lv_salonListe.getItems().add(key);
@@ -142,6 +147,7 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
         Platform.runLater(() -> {
             vbox_lobbyConteneur.setVisible(false);
             sp_mainConteneur.setVisible(true);
+            partieTerminee = false;
 
             for (int i = 0; i < 9; i++)
                 caseCliquable((Group) pane_caseConteneur.getChildren().get(i), i);
@@ -221,19 +227,19 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
     }
 
     public void joueurQuitter() throws RemoteException {
-        Platform.runLater(() -> {
-            showAlerte("TicTacToe", "", "Vous avez gagné car le joueur en face a quitté la partie.",
-                    AlertType.INFORMATION);
-            try {
-                if (id != null)
-                    this.partie.quitterSalon(this.id, monitor);
-                initLobby();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                quitter();
-            }
-        });
-
+        if (!partieTerminee)
+            Platform.runLater(() -> {
+                showAlerte("TicTacToe", "", "Vous avez gagné car le joueur en face a quitté la partie.",
+                        AlertType.INFORMATION);
+                try {
+                    if (id != null)
+                        this.partie.quitterSalon(this.id, monitor);
+                    initLobby();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    quitter();
+                }
+            });
     }
 
     public void celluleMAJ(int x, int y, Cellule status, boolean estTonTour) throws RemoteException {
@@ -258,15 +264,19 @@ public class TicTacToeControleur extends client.src.controleurs.BaseControleur {
 
     public void aGagner(NullBool estGagnant) throws RemoteException {
         Platform.runLater(() -> {
+            partieTerminee = true;
             if (estGagnant == NullBool.TRUE)
                 showAlerte("TicTacToe", "", "Vous avez gagné la partie.", AlertType.INFORMATION);
             else if (estGagnant == NullBool.FALSE)
                 showAlerte("TicTacToe", "", "Vous avez perdu la partie.", AlertType.INFORMATION);
-            else // TODO:
-                showAlerte("TicTacToe", "", "Draw.", AlertType.INFORMATION);
+            else
+                showAlerte("TicTacToe", "", "Vous avez fait égalité.", AlertType.INFORMATION);
+
             try {
-                if (id != null)
+                if (id != null) {
                     this.partie.quitterSalon(this.id, monitor);
+                    this.id = null;
+                }
                 initLobby();
             } catch (RemoteException e) {
                 e.printStackTrace();
