@@ -31,12 +31,12 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="btnAllumettes" mnemonicParsing="false" onAction="#openAllumettes" prefWidth="100.0" text="ALLUMETTES" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Button fx:id="btnAllumettes" mnemonicParsing="false" onAction="#openAllumettes" prefWidth="100.0" text="Allumettes" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
             </Button>
-            <Button fx:id="btnPendu" mnemonicParsing="false" onAction="#openPendu" prefWidth="100.0" text="PENDU" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+            <Button fx:id="btnPendu" mnemonicParsing="false" onAction="#openPendu" prefWidth="100.0" text="Pendu" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
             <Button fx:id="btnTicTacToe" mnemonicParsing="false" onAction="#openTicTacToe" prefWidth="100.0" text="TicTacToe" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <Group fx:id="grp_joueurAllumettes1" GridPane.rowIndex="1">
                <children>
