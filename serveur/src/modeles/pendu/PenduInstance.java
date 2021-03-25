@@ -14,8 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-// ? WTF I MUST SERIALIZE THIS
-public class PenduInstance implements Serializable {
+public class PenduInstance {
     private String mot;
     private int vie = commun.IPendu.MAX_VIE;
 
@@ -88,11 +87,8 @@ public class PenduInstance implements Serializable {
             Random alea = new Random();
             // On choisi une lettre au hasard
             int numLettre = alea.nextInt(this.mot.length());
-            ArrayList<Integer> indexs = new ArrayList<>() {
-                {
-                    add(numLettre);
-                }
-            };
+            ArrayList<Integer> indexs = new ArrayList<>();
+            indexs.add(numLettre);
             // On ajoute tout les indexs de la lettre à la liste
             for (int j = 0; j < this.mot.length(); j++) {
                 if (this.mot.charAt(j) == this.mot.charAt(numLettre)) {
